@@ -8,4 +8,6 @@ enum class QFScreens {
     OTPScreen2,
     HomePage,
     Navtest,
+    CustomerSupport,
+    VisitorsScreen,
 }

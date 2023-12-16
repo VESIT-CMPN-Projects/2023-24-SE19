@@ -12,7 +12,8 @@ import com.example.quickfixx.screens.auth.SignUpScreen
 import com.example.quickfixx.screens.auth.WelcomePageScreen
 import com.example.quickfixx.screens.auth.OTPScreen1
 import com.example.quickfixx.screens.auth.OTPScreen2
-import com.example.quickfixx.screens.auth.Navtest
+import com.example.quickfixx.screens.auth.CustomerSupport
+import com.example.quickfixx.screens.auth.VisitorsScreen
 
 /*
 * Route in case you use Enums: route = QFScreens.WelcomePageScreen.name
@@ -49,6 +50,13 @@ fun AppNavigation() {
         composable(route = Screens.ElectricianData.route) {
             ElectricianData(navController)
         }
+        composable(route = Screens.CustomerSupport.route) {
+            CustomerSupport(navController)
+        }
+        composable(route = Screens.VisitorsScreen.route) {
+            VisitorsScreen()
+        }
+
 //        composable(route = Screens.Navtest.route) {
 //            Navtest(navController)
 //        }

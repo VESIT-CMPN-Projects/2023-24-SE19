@@ -40,6 +40,7 @@ import androidx.navigation.NavController
 import com.example.quickfixx.navigation.Screens
 
 
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginScreen(navController: NavController) {
@@ -142,7 +143,7 @@ fun LoginScreen(navController: NavController) {
                     Spacer(modifier = Modifier.height(16.dp))
                     Button(
                         onClick = {
-                            navController.navigate(Screens.OTPScreen1.route)
+                            navController.navigate(Screens.VisitorsScreen.route)
                         },
                         shape = RoundedCornerShape(10.dp),
                         contentPadding = ButtonDefaults.ContentPadding,

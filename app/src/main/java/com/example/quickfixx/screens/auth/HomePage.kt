@@ -91,7 +91,7 @@ fun HomePage(navController: NavController) {
                     navigationIcon = {
                         IconButton(
                             onClick = {
-                                navController.navigate(Screens.Navtest.route)
+                                navController.navigate(Screens.CustomerSupport.route)
                             },
                         ) {
                             Icon(
