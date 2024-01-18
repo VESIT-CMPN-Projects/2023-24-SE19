@@ -9,7 +9,7 @@ import com.example.quickfixx.screens.auth.ElectricianData
 import com.example.quickfixx.screens.auth.HomePage
 import com.example.quickfixx.screens.auth.LoginScreen
 import com.example.quickfixx.screens.auth.SignUpScreen
-import com.example.quickfixx.screens.auth.WelcomePageScreen
+import com.example.quickfixx.WelcomePage.WelcomePageScreen
 import com.example.quickfixx.screens.auth.OTPScreen1
 import com.example.quickfixx.screens.auth.OTPScreen2
 import com.example.quickfixx.screens.auth.CustomerSupport
