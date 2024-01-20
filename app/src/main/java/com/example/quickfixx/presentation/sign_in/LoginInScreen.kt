@@ -1,6 +1,6 @@
-package com.example.quickfixx.screens.auth
+package com.example.quickfixx.presentation.sign_in
 
-import android.app.Activity
+import android.widget.Toast
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -10,11 +10,9 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowBackIos
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.rounded.MailOutline
-import androidx.compose.material.icons.rounded.Phone
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -27,29 +25,36 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.quickfixx.navigation.Screens
-import com.google.firebase.auth.FirebaseAuth
-
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LoginScreen(navController: NavController) {
+fun LoginInScreen(
+    state: SignInState,
+    onSignInClick: () -> Unit) {
+
     val context = LocalContext.current
-    val googleSignInHelper = remember { GoogleSignInHelper(context as Activity) }
+    LaunchedEffect(key1 = state.signInError) {
+        state.signInError?.let { error ->
+            Toast.makeText(
+                context,
+                error,
+                Toast.LENGTH_LONG
+            ).show()
+        }
+    }
     var gmail = remember {
         mutableStateOf("")
     }
@@ -76,7 +81,7 @@ fun LoginScreen(navController: NavController) {
                     navigationIcon = {
                         IconButton(
                             onClick = {
-                                navController.popBackStack()
+//                                navController.popBackStack()
                             }
                         ) {
                             Icon(
@@ -104,7 +109,7 @@ fun LoginScreen(navController: NavController) {
                         value = gmail.value,
                         onValueChange ={
                             gmail.value = it
-                         },
+                        },
                         enabled = true,
                         placeholder = { Text(text = "Gmail") },
                         leadingIcon = {
@@ -150,7 +155,7 @@ fun LoginScreen(navController: NavController) {
                     Spacer(modifier = Modifier.height(16.dp))
                     Button(
                         onClick = {
-                            navController.navigate(Screens.VisitorsScreen.route)
+//                            navController.navigate(Screens.VisitorsScreen.route)
                         },
                         shape = RoundedCornerShape(10.dp),
                         contentPadding = ButtonDefaults.ContentPadding,
@@ -170,9 +175,7 @@ fun LoginScreen(navController: NavController) {
                     )
                     Spacer(modifier = Modifier.height(16.dp))
                     Button(
-                        onClick = {
-                            googleSignInHelper.signInWithGoogle()
-                                  },
+                        onClick = onSignInClick,
                         shape = RoundedCornerShape(10.dp),
                         contentPadding = ButtonDefaults.ContentPadding,
                         modifier = Modifier
@@ -183,40 +186,8 @@ fun LoginScreen(navController: NavController) {
                             letterSpacing = 1.sp
                         )
                     }
-
-//                    val user = FirebaseAuth.getInstance().currentUser
-//                    if (user != null) {
-//                        loggedInUserName = user.displayName
-//                        Text(
-//                            text = "Logged in as: $loggedInUserName",
-//                            modifier = Modifier.padding(16.dp)
-//                        )
-//                    } else {
-//                        Text(
-//                            text = "Not logged in",
-//                            modifier = Modifier.padding(16.dp)
-//                        )
-//                    }
                 }
             }
         }
     }
 }
-//fun loginWithGoogle(googleSignInHelper: GoogleSignInHelper, navController: NavController) {
-//    try {
-//        // Initiate Google Sign-In
-//        val user = googleSignInHelper.signInWithGoogle()
-//
-//        // Check if the sign-in was successful and user is not null
-//        if (user != null) {
-//            // Navigate to the HomePage
-//            navController.navigate(Screens.HomePage.route)
-//        } else {
-//            // Handle sign-in failure (optional)
-//            // You may want to show an error message or take appropriate action
-//        }
-//    } catch (e: Exception) {
-//        // Handle any exceptions that may occur during the sign-in process
-//        // You may want to show an error message or take appropriate action
-//    }
-//}

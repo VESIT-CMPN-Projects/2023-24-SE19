@@ -1,26 +1,44 @@
 {
   "project_info": {
-    "project_number": "887281500772",
-    "project_id": "quickfixx-3179d",
-    "storage_bucket": "quickfixx-3179d.appspot.com"
+    "project_number": "742119331727",
+    "project_id": "fir-with-springboot-486c1",
+    "storage_bucket": "fir-with-springboot-486c1.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:887281500772:android:345cdf6f9491c5ab8c9571",
+        "mobilesdk_app_id": "1:742119331727:android:31b6ca8541fead3524ddfa",
         "android_client_info": {
           "package_name": "com.example.quickfixx"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "742119331727-j7befmu4ueailcmoj7cj0v4d9l7kls40.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.quickfixx",
+            "certificate_hash": "04fdc73cb383a7a9f372f95ccc1a3ef7a5ffee1d"
+          }
+        },
+        {
+          "client_id": "742119331727-9c78mcgdcsbp0e9gr7pvp1uj30vf7d4j.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
-          "current_key": "AIzaSyCbWFll_oLm-_Tk285CzdrSFHlhYfjUpyI"
+          "current_key": "AIzaSyBmOJljCfZHWoHvexjnQcv1O7cQDzMFxWI"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "742119331727-9c78mcgdcsbp0e9gr7pvp1uj30vf7d4j.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }
