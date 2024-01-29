@@ -1,5 +1,6 @@
 package com.example.quickfixx.screens.auth
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -9,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -156,7 +158,9 @@ fun HomePage(navController: NavController) {
                         colors = TextFieldDefaults.outlinedTextFieldColors(
                         ),
                         singleLine = true,
-                        modifier = Modifier.padding(3.dp).fillMaxWidth(),
+                        modifier = Modifier
+                            .padding(3.dp)
+                            .fillMaxWidth(),
 
                         keyboardOptions = KeyboardOptions(
                             keyboardType = KeyboardType.Text,
@@ -164,12 +168,20 @@ fun HomePage(navController: NavController) {
                         )
                     )
                     Spacer(modifier = Modifier.height(12.dp))
+
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
                             .weight(1f),
                         horizontalArrangement = Arrangement.SpaceBetween
+
                     ) {
+                        Button(onClick = {
+                            navController.navigate("electrician")
+                        },
+                            modifier = Modifier.size(24.dp)) {
+                            Text(text = "Electrician")
+                        }
                         BigButton(text = "   Electrician",icon = Icons.Rounded.ElectricalServices,navController)
 
                         Icon(
@@ -219,18 +231,18 @@ fun HomePage(navController: NavController) {
     }
 }
 @Composable
-fun BigButton(text: String,icon: ImageVector,navController: NavController) {
+fun BigButton(text: String, icon: ImageVector, navController: NavController) {
     Button(
         onClick = {
-                navController.navigate(Screens.ElectricianData.route)
+            Log.d("From ", "Going to Electrician page")
+            navController.navigate("electricians") // Ensure the route name is correct
         },
         modifier = Modifier
             .padding(16.dp)
             .fillMaxWidth()
             .height(150.dp),
-        colors = ButtonDefaults.buttonColors( MaterialTheme.colorScheme.onSurface)
-    )
-    {
+        colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.onSurface)
+    ) {
         Icon(
             imageVector = icon,
             contentDescription = null,
@@ -239,6 +251,7 @@ fun BigButton(text: String,icon: ImageVector,navController: NavController) {
         Text(text = text, color = Color.White)
     }
 }
+
 //@OptIn(ExperimentalMaterial3Api::class)
 //@Composable
 //fun Navtest(scope: CoroutineScope, drawerState: DrawerState) {

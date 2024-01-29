@@ -7,7 +7,7 @@ sealed class Screens(val route: String) {
     object OTPScreen1: Screens(route = "OTP_screen1")
     object OTPScreen2: Screens(route = "OTP_screen2")
     object HomePage: Screens(route = "Home_Page")
-    object ElectricianData: Screens(route = "Electrician Data")
+    object ElectricianData: Screens(route = "electricians")
 //    object Navtest: Screens(route = "Navtest")
     object CustomerSupport: Screens(route = "CustomerSupport")
     object VisitorsScreen: Screens(route = "VisitorsScreen")
