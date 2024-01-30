@@ -7,12 +7,12 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.quickfixx.screens.auth.ElectricianData
 import com.example.quickfixx.screens.auth.HomePage
-import com.example.quickfixx.screens.auth.LoginScreen
 import com.example.quickfixx.screens.auth.SignUpScreen
 import com.example.quickfixx.WelcomePage.WelcomePageScreen
 import com.example.quickfixx.screens.auth.OTPScreen1
 import com.example.quickfixx.screens.auth.OTPScreen2
 import com.example.quickfixx.screens.auth.CustomerSupport
+import com.example.quickfixx.screens.auth.LoginScreen
 import com.example.quickfixx.screens.auth.VisitorsScreen
 
 /*
@@ -47,9 +47,9 @@ fun AppNavigation() {
         composable(route = Screens.HomePage.route) {
             HomePage(navController)
         }
-        composable(route = Screens.ElectricianData.route) {
-            ElectricianData(navController)
-        }
+//        composable(route = Screens.ElectricianData.route) {
+//            ElectricianData(navController)
+//        }
         composable(route = Screens.CustomerSupport.route) {
             CustomerSupport(navController)
         }

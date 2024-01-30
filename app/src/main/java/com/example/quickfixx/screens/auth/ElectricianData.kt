@@ -1,5 +1,14 @@
+@file:Suppress("PreviewAnnotationInFunctionWithParameters")
+
 package com.example.quickfixx.screens.auth
 
+import android.annotation.SuppressLint
+import android.util.Log
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -9,15 +18,19 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowBackIos
 import androidx.compose.material.icons.filled.CalendarMonth
-import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Phone
-import androidx.compose.material.icons.rounded.Phone
+import androidx.compose.material3.AssistChip
+import androidx.compose.material3.AssistChipDefaults
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Divider
@@ -25,33 +38,88 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.quickfixx.R
+import com.example.quickfixx.R.drawable.baseline_star_outline_24
 import com.example.quickfixx.navigation.Screens
 
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ElectricianData(navController: NavController) {
-    Column {
-        Text(text = "Name: Raju Rajbhar     Contact No:9845354125 ", modifier = Modifier.padding(8.dp))
-        Text(text = "Experience:3 Years      Location:10 minutes ", modifier = Modifier.padding(8.dp))
-        CombinedButton(navController)
+
+    Surface(
+        modifier = Modifier.fillMaxWidth(),
+        color = MaterialTheme.colorScheme.background
+    ) {
+        Scaffold(
+            topBar = {
+                TopAppBar(title = {
+                    Text(text = "QuickFixx",
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                },
+                    navigationIcon = {
+                        IconButton(onClick = {
+                            navController.navigate(Screens.CustomerSupport.route)
+                        },
+                        ) {
+                          Icon(
+                              imageVector = Icons.Default.Menu,
+                              contentDescription = "Menu icon",
+                              tint = MaterialTheme.colorScheme.onSurface
+                          )
+                        }
+                    }
+                    )
+            }
+        ) {
+
+
+//                Text(text = "Experts", TextAlign= TextAlign.Start, modifier = Modifier.padding(16.dp))
+
+        Column(
+            modifier = Modifier
+                .padding(vertical = it.calculateTopPadding())
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+        ) {
+
+            Text(text = "Experts",
+                Modifier
+                    .padding(top = 5.dp, bottom = 9.dp, start = 9.dp)
+                    .fillMaxWidth()
+                    .background(MaterialTheme.colorScheme.background)
+                    .wrapContentHeight(),
+                fontSize = 24.sp,  // Set the desired font size here
+                fontWeight = FontWeight.W900,
+                textAlign = TextAlign.Left,
+                textDecoration = TextDecoration.Underline
+            )
+            CardElevation("Service_1", 4, navController)
+        DataCard(navController = navController)
         Divider(modifier = Modifier.fillMaxWidth(), color = Color.Black, thickness = 1.dp)
         Text(text = "Name: Suresh Jain      Contact No:8451534684 ", modifier = Modifier.padding(8.dp))
         Text(text = "Experience:1 Years      Location:17 minutes ", modifier = Modifier.padding(8.dp))
@@ -89,6 +157,49 @@ fun ElectricianData(navController: NavController) {
         Text(text = "Experience:2 Years      Location:90 minutes ", modifier = Modifier.padding(8.dp))
         CombinedButton(navController)
         Divider(modifier = Modifier.fillMaxWidth(), color = Color.Black, thickness = 1.dp)
+    }
+
+        }
+    }
+}
+
+@Composable
+fun DataCard(navController: NavController){
+    Row (
+        modifier = Modifier.fillMaxWidth()
+    ){
+        Image(imageVector = Icons.Filled.Person, contentDescription = null,  modifier = Modifier.size(40.dp))
+        ProviderInfo(name = "Service Provider")
+    }
+    Button(onClick = {
+        navController.navigate("home")
+    },
+        shape = RoundedCornerShape(10.dp),
+        modifier = Modifier.width(200.dp)
+    ) {
+        Text(text = "Service Provider",
+            letterSpacing = 1.sp
+        )
+        
+    }
+}
+
+@Composable
+fun ProviderInfo(name: String, ){
+    Column {
+        Text(text = name, Modifier.padding(8.dp), fontWeight = FontWeight.Bold, textAlign = TextAlign.Center)
+        Text(text = "Experience: 1 year", Modifier.padding(8.dp))
+        AssistChip(
+            onClick = { Log.d("Assist chip", "hello world") },
+            label = { Text("Assist chip") },
+            leadingIcon = {
+                Icon(
+                    Icons.Filled.Check,
+                    contentDescription = "Localized description",
+                    Modifier.size(AssistChipDefaults.IconSize)
+                )
+            }
+        )
     }
 }
 @Composable
@@ -145,4 +256,175 @@ fun CombinedButton(navController: NavController) {
     }
 }
 
+@Composable
+fun CardElevation(name: String, rating: Int, navController: NavController) {
+    Surface(
+        shape = RoundedCornerShape(16.dp),
+        color = Color(0xFFDAE1E7),
+        modifier = Modifier
+            .height(310.dp)
+            .padding(10.dp)
+            .fillMaxWidth(),
+        shadowElevation = 10.dp
+    ) {
+        Column(
+            verticalArrangement = Arrangement.Center
+        ) {
+
+
+        Row(
+            modifier = Modifier.padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Surface(
+                shape = RoundedCornerShape(16.dp),
+                modifier = Modifier.size(width = 100.dp, height = 140.dp)
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.qf_app_logo),
+                    contentScale = ContentScale.Crop,
+                    contentDescription = null,
+//                    modifier = Modifier.padding(15.dp)
+
+                )
+            }
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .weight(2f),
+//                verticalArrangement = Arrangement.Center
+            ) {
+                Surface(
+                    shape = RoundedCornerShape(24.dp),
+                    modifier = Modifier
+                        .padding(2.dp)
+                        .fillMaxWidth(),
+                    color = Color(0xFFD1D5E1)
+                ) {
+                    Column(
+                        Modifier.padding(horizontal = 4.dp)
+                    ){
+                        Text(
+                            text = name,
+                            fontSize = 24.sp,
+                            style = MaterialTheme.typography.titleLarge,
+                            fontWeight = FontWeight.SemiBold,
+                            modifier = Modifier.padding(10.dp)
+                        )
+
+                        Spacer(modifier = Modifier.height(2.dp))
+
+
+                        AssistChip(
+                                onClick = { Log.d("Assist chip", "hello world") },
+                                label = { Text("Verified") },
+                                leadingIcon = {
+                                    Icon(
+                                        Icons.Filled.Check,
+                                        contentDescription = "Localized description",
+                                        Modifier.size(AssistChipDefaults.IconSize)
+                                    )
+                                }
+                            )
+
+
+                        Spacer(modifier = Modifier.height(2.dp))
+
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Text(
+                                text = buildAnnotatedString {
+
+                                    if (rating >= 4) {
+                                        withStyle(style = SpanStyle(color = Color.Black)) {
+                                            append("Excellent: $rating")
+                                        }
+                                    } else if (rating > 3) {
+                                        withStyle(style = SpanStyle(color = Color.Black)) {
+                                            append("Good: $rating")
+                                        }
+                                    } else {
+                                        withStyle(style = SpanStyle(color = Color.Black)) {
+                                            append("Average: $rating")
+                                        }
+                                    }
+                                },
+                                fontSize = 14.sp,
+                                fontWeight = FontWeight.SemiBold,
+                                style = MaterialTheme.typography.titleLarge
+                            )
+                            Spacer(modifier = Modifier.width(4.dp))
+                            repeat(5) { index ->
+                                val starColor =
+                                    if (index < rating) Color(0xFFF6B266) else Color.Gray
+
+                                Icon(
+                                    painter = painterResource(id = baseline_star_outline_24),
+                                    tint = starColor,
+                                    contentDescription = null
+                                )
+                            }
+                        }
+
+                        Spacer(modifier = Modifier.height(4.dp))
+
+                        OutlinedButton(
+                            shape = RoundedCornerShape(8.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                contentColor = Color.Black,
+                                containerColor = Color.White
+                            ),
+                            onClick = { /*TODO*/ }
+                        ) {
+                            Text(
+                                text = "View Profile",
+                                fontSize = 11.sp,
+                                fontWeight = FontWeight.SemiBold,
+                                style = MaterialTheme.typography.titleLarge
+                            )
+                        }
+                    }
+            }
+                OutlinedButton(
+                    shape = RoundedCornerShape(8.dp),
+                    border = BorderStroke(1.dp, Color.Blue),
+                    colors = ButtonDefaults.buttonColors(
+                        contentColor = Color.Blue,
+                        containerColor = Color.White,
+                    ),
+                    onClick = { /*TODO*/ }
+                ) {
+                    Text(
+                        text = "Contact",
+                        fontSize = 11.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        style = MaterialTheme.typography.titleLarge
+                    )
+                }
+        }
+
+    }
+//            OutlinedButton(
+//                shape = RoundedCornerShape(8.dp),
+//                border = BorderStroke(1.dp, Color.Blue),
+//                colors = ButtonDefaults.buttonColors(
+//                    contentColor = Color.Blue,
+//                    containerColor = Color.White,
+//                ),
+//                onClick = { /*TODO*/ }
+//            ) {
+//                Text(
+//                    text = "Contact",
+//                    fontSize = 11.sp,
+//                    fontWeight = FontWeight.SemiBold,
+//                    style = MaterialTheme.typography.titleLarge
+//                )
+//            }
+//            Text(
+//                text = "Contact",
+//                fontSize = 11.sp,
+//                fontWeight = FontWeight.SemiBold,
+//                style = MaterialTheme.typography.titleLarge
+//            )
+        }
+}}
 

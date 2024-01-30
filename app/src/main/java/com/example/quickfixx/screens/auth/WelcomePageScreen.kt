@@ -1,5 +1,6 @@
 package com.example.quickfixx.screens.auth
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -73,7 +74,8 @@ fun WelcomePageScreen(
             ){
                 Button(
                     onClick = {
-                              navController.navigate(Screens.LoginScreen.route)
+                        Log.d("MyApp", "Entering onClick for Login button")
+                        navController.navigate("sign_in")
                     },
                     shape = RoundedCornerShape(10.dp),
                     contentPadding = ButtonDefaults.ContentPadding,
@@ -86,7 +88,7 @@ fun WelcomePageScreen(
                     )
                 }
                 Button(
-                    onClick = {navController.navigate(Screens.SignUpScreen.route)},
+                    onClick = {navController.navigate("sign_in")},
                     shape = RoundedCornerShape(10.dp),
                     contentPadding = ButtonDefaults.ContentPadding,
                     modifier = Modifier

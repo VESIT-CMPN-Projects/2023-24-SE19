@@ -1,6 +1,7 @@
 package com.example.quickfixx
 
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -22,6 +23,8 @@ import androidx.navigation.compose.rememberNavController
 import com.example.quickfixx.presentation.sign_in.GoogleAuthUiClient
 import com.example.quickfixx.presentation.sign_in.LoginInScreen
 import com.example.quickfixx.presentation.sign_in.SignInViewModel
+import com.example.quickfixx.screens.auth.ElectricianData
+import com.example.quickfixx.screens.auth.WelcomePageScreen
 import com.example.quickfixx.ui.theme.QuickFixxTheme
 import com.google.android.gms.auth.api.identity.Identity
 import kotlinx.coroutines.launch
@@ -53,17 +56,27 @@ class MainActivity : ComponentActivity() {
                 // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
-//                    color = MaterialTheme.colors.background
+
                 ) {
                     val navController = rememberNavController()
-                    NavHost(navController = navController, startDestination = "sign_in") {
+                    NavHost(navController = navController, startDestination = "welcome") {
+                        composable("welcome"){
+                            WelcomePageScreen(navController = navController)
+                        }
+
+                       composable("electricians"){
+                           ElectricianData(navController = navController)
+                       }
+
+
                         composable("sign_in") {
                             val viewModel = viewModel<SignInViewModel>()
                             val state by viewModel.state.collectAsStateWithLifecycle()
 
                             LaunchedEffect(key1 = Unit) {
                                 if(googleAuthUiClient.getSignedInUser() != null) {
-                                    navController.navigate("profile")
+                                    Log.d("FromLoginPage", "Going to home page")
+                                    navController.navigate("home")
                                 }
                             }
 
@@ -89,7 +102,7 @@ class MainActivity : ComponentActivity() {
                                         Toast.LENGTH_LONG
                                     ).show()
 
-                                    navController.navigate("profile")
+                                    navController.navigate("home")
                                     viewModel.resetState()
                                 }
                             }
@@ -139,7 +152,7 @@ class MainActivity : ComponentActivity() {
 //                            )
 //                        }
                         
-                        composable("profile"){
+                        composable("home"){
                             com.example.quickfixx.presentation.profile.HomePage(navController = navController,
                                 userData = googleAuthUiClient.getSignedInUser(),
                                 onSignOut = {
@@ -155,6 +168,7 @@ class MainActivity : ComponentActivity() {
                                     }
                                 })
                         }
+
                     }
                 }
             }

@@ -1,5 +1,6 @@
 package com.example.quickfixx.screens.auth
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -12,10 +13,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.CalendarMonth
-import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material.icons.filled.Timelapse
 import androidx.compose.material.icons.rounded.Carpenter
 import androidx.compose.material.icons.rounded.ElectricalServices
 import androidx.compose.material.icons.rounded.House
@@ -23,16 +21,11 @@ import androidx.compose.material.icons.rounded.Plumbing
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.DrawerState
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalDrawerSheet
-import androidx.compose.material3.ModalNavigationDrawer
-import androidx.compose.material3.NavigationDrawerItem
-import androidx.compose.material3.NavigationDrawerItemDefaults
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -44,7 +37,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -52,14 +44,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.navigation.NavHostController
-
-import com.example.quickfixx.navigation.QFScreens
 import com.example.quickfixx.navigation.Screens
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -156,7 +142,9 @@ fun HomePage(navController: NavController) {
                         colors = TextFieldDefaults.outlinedTextFieldColors(
                         ),
                         singleLine = true,
-                        modifier = Modifier.padding(3.dp).fillMaxWidth(),
+                        modifier = Modifier
+                            .padding(3.dp)
+                            .fillMaxWidth(),
 
                         keyboardOptions = KeyboardOptions(
                             keyboardType = KeyboardType.Text,
@@ -164,12 +152,20 @@ fun HomePage(navController: NavController) {
                         )
                     )
                     Spacer(modifier = Modifier.height(12.dp))
+
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
                             .weight(1f),
                         horizontalArrangement = Arrangement.SpaceBetween
+
                     ) {
+                        Button(onClick = {
+                            navController.navigate("electrician")
+                        },
+                            modifier = Modifier.size(24.dp)) {
+                            Text(text = "Electrician")
+                        }
                         BigButton(text = "   Electrician",icon = Icons.Rounded.ElectricalServices,navController)
 
                         Icon(
@@ -219,18 +215,18 @@ fun HomePage(navController: NavController) {
     }
 }
 @Composable
-fun BigButton(text: String,icon: ImageVector,navController: NavController) {
+fun BigButton(text: String, icon: ImageVector, navController: NavController) {
     Button(
         onClick = {
-                navController.navigate(Screens.ElectricianData.route)
+            Log.d("From ", "Going to Electrician page")
+            navController.navigate("electricians") // Ensure the route name is correct
         },
         modifier = Modifier
             .padding(16.dp)
             .fillMaxWidth()
             .height(150.dp),
-        colors = ButtonDefaults.buttonColors( MaterialTheme.colorScheme.onSurface)
-    )
-    {
+        colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.onSurface)
+    ) {
         Icon(
             imageVector = icon,
             contentDescription = null,
@@ -239,6 +235,7 @@ fun BigButton(text: String,icon: ImageVector,navController: NavController) {
         Text(text = text, color = Color.White)
     }
 }
+
 //@OptIn(ExperimentalMaterial3Api::class)
 //@Composable
 //fun Navtest(scope: CoroutineScope, drawerState: DrawerState) {
