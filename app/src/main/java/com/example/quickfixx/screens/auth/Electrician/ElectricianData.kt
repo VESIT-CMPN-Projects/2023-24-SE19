@@ -1,13 +1,12 @@
 @file:Suppress("PreviewAnnotationInFunctionWithParameters")
 
-package com.example.quickfixx.screens.auth
+package com.example.quickfixx.screens.auth.Electrician
 
 import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -19,7 +18,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -44,9 +42,9 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -56,18 +54,24 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.quickfixx.R
 import com.example.quickfixx.R.drawable.baseline_star_outline_24
+import com.example.quickfixx.ViewModels.ElectricianViewModel
 import com.example.quickfixx.navigation.Screens
 
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "StateFlowValueCalledInComposition")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ElectricianData(navController: NavController) {
+fun ElectricianData(navController: NavController, viewModel: ElectricianViewModel) {
+
+    val post = viewModel.state.value.data
+
+    val coroutineScope = rememberCoroutineScope()
+
+
 
     Surface(
         modifier = Modifier.fillMaxWidth(),
@@ -121,8 +125,12 @@ fun ElectricianData(navController: NavController) {
             CardElevation("Service_1", 4, navController)
         DataCard(navController = navController)
         Divider(modifier = Modifier.fillMaxWidth(), color = Color.Black, thickness = 1.dp)
-        Text(text = "Name: Suresh Jain      Contact No:8451534684 ", modifier = Modifier.padding(8.dp))
-        Text(text = "Experience:1 Years      Location:17 minutes ", modifier = Modifier.padding(8.dp))
+            if (post != null) {
+                Text(text = post.title, modifier = Modifier.padding(8.dp))
+            }
+            if (post != null) {
+                Text(text = post.body, modifier = Modifier.padding(8.dp))
+            }
         CombinedButton(navController)
         Divider(modifier = Modifier.fillMaxWidth(), color = Color.Black, thickness = 1.dp)
         Text(text = "Name: Prashant Rai     Contact No:7564215987 ", modifier = Modifier.padding(8.dp))

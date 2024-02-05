@@ -5,7 +5,6 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.quickfixx.screens.auth.ElectricianData
 import com.example.quickfixx.screens.auth.HomePage
 import com.example.quickfixx.screens.auth.SignUpScreen
 import com.example.quickfixx.WelcomePage.WelcomePageScreen
