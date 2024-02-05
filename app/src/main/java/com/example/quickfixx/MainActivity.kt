@@ -20,12 +20,16 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.quickfixx.ViewModels.ElectricianViewModel
 import com.example.quickfixx.presentation.sign_in.GoogleAuthUiClient
 import com.example.quickfixx.presentation.sign_in.LoginInScreen
 import com.example.quickfixx.presentation.sign_in.SignInViewModel
-import com.example.quickfixx.screens.auth.ElectricianData
+import com.example.quickfixx.repository.Repository
+import com.example.quickfixx.screens.auth.Electrician.ElectricianData
 import com.example.quickfixx.screens.auth.WelcomePageScreen
 import com.example.quickfixx.ui.theme.QuickFixxTheme
+import com.example.quickfixx.util.constants.Constants
+import com.google.ai.client.generativeai.GenerativeModel
 import com.google.android.gms.auth.api.identity.Identity
 import kotlinx.coroutines.launch
 
@@ -51,6 +55,14 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val generativeModel = GenerativeModel(
+            // Use a model that's applicable for your use case (see "Implement basic use cases" below)
+            modelName = "gemini-pro-vision",
+            // Access your API key as a Build Configuration variable (see "Set up your API key" above)
+            apiKey =Constants.API_KEY
+        )
+
+
         setContent {
             QuickFixxTheme {
                 // A surface container using the 'background' color from the theme
@@ -65,7 +77,8 @@ class MainActivity : ComponentActivity() {
                         }
 
                        composable("electricians"){
-                           ElectricianData(navController = navController)
+                           val viewModel = ElectricianViewModel(repository = Repository())
+                           ElectricianData(navController = navController, viewModel)
                        }
 
 
