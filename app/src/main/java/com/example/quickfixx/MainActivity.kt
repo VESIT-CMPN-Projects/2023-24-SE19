@@ -35,17 +35,6 @@ import com.google.android.gms.auth.api.identity.Identity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
-//class MainActivity : ComponentActivity() {
-//    override fun onCreate(savedInstanceState: Bundle?) {
-//        super.onCreate(savedInstanceState)
-//        FirebaseApp.initializeApp(this)
-//        setContent {
-//            QuickFixxTheme {
-//                AppNavigation()
-//            }
-//        }
-//    }
-//}
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
