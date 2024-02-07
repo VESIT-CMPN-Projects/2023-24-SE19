@@ -7,13 +7,17 @@ import com.example.quickfixx.repository.Repository
 import com.example.quickfixx.screens.auth.Electrician.ElectricianScreenState
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class ElectricianViewModel(
+
+@HiltViewModel
+class ElectricianViewModel @Inject constructor(
     private val repository: Repository
 ): ViewModel() {
 
@@ -23,18 +27,18 @@ class ElectricianViewModel(
     val state = _state.asStateFlow()
 
     init {
-        getPost()
+        getAllElectrician()
     }
 
-    fun getPost() {
+    fun getAllElectrician() {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                val postData = async {
-                    repository.getPost()
+                val electricians = async {
+                    repository.getAllElectrician()
                 }.await()
 
                 _state.value = state.value.copy(
-                    data = postData
+                    data = electricians
                 )
             } catch (e: Exception) {
                 Log.e("ElectricianViewModel", "Error fetching post", e)

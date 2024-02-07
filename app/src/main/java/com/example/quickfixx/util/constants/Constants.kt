@@ -1,6 +1,5 @@
 package com.example.quickfixx.util.constants
 
 object Constants {
-    const val API_KEY = "AIzaSyAkN_jPxWr8xNsZmMa8wF4jQIVFgNk-w7U"
-    const val BASE_URL = "https://jsonplaceholder.typicode.com/posts/"
+    const val BASE_URL = "http://192.168.29.119:8080/api/"
 }

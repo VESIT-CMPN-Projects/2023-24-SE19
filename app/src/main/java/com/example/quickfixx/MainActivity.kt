@@ -14,6 +14,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.hilt.navigation.compose.hiltViewModel
+//import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -24,13 +26,13 @@ import com.example.quickfixx.ViewModels.ElectricianViewModel
 import com.example.quickfixx.presentation.sign_in.GoogleAuthUiClient
 import com.example.quickfixx.presentation.sign_in.LoginInScreen
 import com.example.quickfixx.presentation.sign_in.SignInViewModel
-import com.example.quickfixx.repository.Repository
 import com.example.quickfixx.screens.auth.Electrician.ElectricianData
 import com.example.quickfixx.screens.auth.WelcomePageScreen
 import com.example.quickfixx.ui.theme.QuickFixxTheme
 import com.example.quickfixx.util.constants.Constants
 import com.google.ai.client.generativeai.GenerativeModel
 import com.google.android.gms.auth.api.identity.Identity
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 //class MainActivity : ComponentActivity() {
@@ -44,6 +46,7 @@ import kotlinx.coroutines.launch
 //        }
 //    }
 //}
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
     private val googleAuthUiClient by lazy {
@@ -54,13 +57,13 @@ class MainActivity : ComponentActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        val generativeModel = GenerativeModel(
-            // Use a model that's applicable for your use case (see "Implement basic use cases" below)
-            modelName = "gemini-pro-vision",
-            // Access your API key as a Build Configuration variable (see "Set up your API key" above)
-            apiKey =Constants.API_KEY
-        )
+            super.onCreate(savedInstanceState)
+            val generativeModel = GenerativeModel(
+                // Use a model that's applicable for your use case (see "Implement basic use cases" below)
+                modelName = "gemini-pro-vision",
+                // Access your API key as a Build Configuration variable (see "Set up your API key" above)
+                apiKey = BuildConfig.GOOGLE_API_KEY
+            )
 
 
         setContent {
@@ -77,7 +80,8 @@ class MainActivity : ComponentActivity() {
                         }
 
                        composable("electricians"){
-                           val viewModel = ElectricianViewModel(repository = Repository())
+//                           val viewModel = ElectricianViewModel(repository = Repository(api = ))
+                           val viewModel : ElectricianViewModel= hiltViewModel()
                            ElectricianData(navController = navController, viewModel)
                        }
 
