@@ -2,6 +2,8 @@ package com.example.quickfixx.presentation.sign_in
 import android.content.Context
 import android.content.Intent
 import android.content.IntentSender
+import android.util.Log
+import androidx.compose.runtime.MutableState
 import com.example.quickfixx.R
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
 import com.google.android.gms.auth.api.identity.BeginSignInRequest.GoogleIdTokenRequestOptions
@@ -31,6 +33,15 @@ class GoogleAuthUiClient(
         return result?.pendingIntent?.intentSender
     }
 
+    fun signinWithEmailPassword(email: String, password: String){
+        auth.signInWithEmailAndPassword(email, password).addOnCompleteListener{ task->
+            if(task.isSuccessful){
+                Log.d("Login", "sucess")
+            }else{
+                Log.d("Login", "unsuccessful")
+            }
+        }
+    }
     suspend fun signInWithIntent(intent: Intent): SignInResult {
         val credential = oneTapClient.getSignInCredentialFromIntent(intent)
         val googleIdToken = credential.googleIdToken
