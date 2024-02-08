@@ -36,14 +36,14 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
-import com.example.quickfixx.navigation.Screens
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginInScreen(
     state: SignInState,
-    onSignInClick: () -> Unit) {
+    googleAuthUiClient: GoogleAuthUiClient,
+    onSignInClick: () -> Unit
+    ) {
 
     val context = LocalContext.current
     LaunchedEffect(key1 = state.signInError) {
@@ -62,6 +62,8 @@ fun LoginInScreen(
     var password = remember {
         mutableStateOf("")
     }
+
+
 //    var loggedInUserName by remember { mutableStateOf<String?>(null) }
 
     Surface(
@@ -156,6 +158,9 @@ fun LoginInScreen(
                     Button(
                         onClick = {
 //                            navController.navigate(Screens.VisitorsScreen.route)
+                            googleAuthUiClient.signinWithEmailPassword(gmail.toString(),
+                                password.toString()
+                            )
                         },
                         shape = RoundedCornerShape(10.dp),
                         contentPadding = ButtonDefaults.ContentPadding,

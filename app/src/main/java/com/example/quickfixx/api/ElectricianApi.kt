@@ -1,11 +1,10 @@
 package com.example.quickfixx.api
 
-import com.example.quickfixx.model.Post
-import retrofit2.Call
+import com.example.quickfixx.model.Electrician
 import retrofit2.Response
 import retrofit2.http.GET
 
-interface TestApi {
-    @GET("electrician/1")
-    suspend fun getPost(): Response<Post>
+interface ElectricianApi {
+    @GET("electrician")
+    suspend fun getAllElectrician(): Response<List<Electrician>>
 }

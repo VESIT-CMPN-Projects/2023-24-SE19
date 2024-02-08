@@ -18,6 +18,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -62,16 +64,18 @@ import com.example.quickfixx.R.drawable.baseline_star_outline_24
 import com.example.quickfixx.ViewModels.ElectricianViewModel
 import com.example.quickfixx.navigation.Screens
 
+
+
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "StateFlowValueCalledInComposition")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ElectricianData(navController: NavController, viewModel: ElectricianViewModel) {
 
-    val post = viewModel.state.value.data
+    val electricianList = viewModel.state.value.data
 
     val coroutineScope = rememberCoroutineScope()
 
-
+//    Log.d("Electrician", electricianList.toString())
 
     Surface(
         modifier = Modifier.fillMaxWidth(),
@@ -104,13 +108,13 @@ fun ElectricianData(navController: NavController, viewModel: ElectricianViewMode
 
 //                Text(text = "Experts", TextAlign= TextAlign.Start, modifier = Modifier.padding(16.dp))
 
-        Column(
+        LazyColumn(
             modifier = Modifier
                 .padding(vertical = it.calculateTopPadding())
                 .fillMaxSize()
-                .verticalScroll(rememberScrollState())
+//                .verticalScroll(rememberScrollState())
         ) {
-
+            item{
             Text(text = "Experts",
                 Modifier
                     .padding(top = 5.dp, bottom = 9.dp, start = 9.dp)
@@ -122,51 +126,70 @@ fun ElectricianData(navController: NavController, viewModel: ElectricianViewMode
                 textAlign = TextAlign.Left,
                 textDecoration = TextDecoration.Underline
             )
-            CardElevation("Service_1", 4, navController)
-        DataCard(navController = navController)
-        Divider(modifier = Modifier.fillMaxWidth(), color = Color.Black, thickness = 1.dp)
-            if (post != null) {
-                Text(text = post.title, modifier = Modifier.padding(8.dp))
-            }
-            if (post != null) {
-                Text(text = post.body, modifier = Modifier.padding(8.dp))
-            }
-        CombinedButton(navController)
-        Divider(modifier = Modifier.fillMaxWidth(), color = Color.Black, thickness = 1.dp)
-        Text(text = "Name: Prashant Rai     Contact No:7564215987 ", modifier = Modifier.padding(8.dp))
-        Text(text = "Experience:1 Years      Location:25 minutes ", modifier = Modifier.padding(8.dp))
-        CombinedButton(navController)
-        Divider(modifier = Modifier.fillMaxWidth(), color = Color.Black, thickness = 1.dp)
-        Text(text = "Name: Amit Shah        Contact No:7543265145 ", modifier = Modifier.padding(8.dp))
-        Text(text = "Experience:5 Years      Location:45 minutes ", modifier = Modifier.padding(8.dp))
-        CombinedButton(navController)
-        Divider(modifier = Modifier.fillMaxWidth(), color = Color.Black, thickness = 1.dp)
-        Text(text = "Name: Santosh Jain     Contact No:9453651265 ", modifier = Modifier.padding(8.dp))
-        Text(text = "Experience:2 Years      Location:60 minutes ", modifier = Modifier.padding(8.dp))
-        CombinedButton(navController)
-        Divider(modifier = Modifier.fillMaxWidth(), color = Color.Black, thickness = 1.dp)
-        Text(text = "Name: Khush Rotak      Contact No:7542651535 ", modifier = Modifier.padding(8.dp))
-        Text(text = "Experience:3 Years      Location:10 minutes ", modifier = Modifier.padding(8.dp))
-        CombinedButton(navController)
-        Divider(modifier = Modifier.fillMaxWidth(), color = Color.Black, thickness = 1.dp)
-        Text(text = "Name: Raj Kubal        Contact No:7598463215 ", modifier = Modifier.padding(8.dp))
-        Text(text = "Experience:5 Years      Location:75 minutes ", modifier = Modifier.padding(8.dp))
-        CombinedButton(navController)
-        Divider(modifier = Modifier.fillMaxWidth(), color = Color.Black, thickness = 1.dp)
-        Text(text = "Name: Abdul Rafique    Contact No:8756421156 ", modifier = Modifier.padding(8.dp))
-        Text(text = "Experience:3 Years      Location:76 minutes ", modifier = Modifier.padding(8.dp))
-        CombinedButton(navController)
-        Divider(modifier = Modifier.fillMaxWidth(), color = Color.Black, thickness = 1.dp)
-        Text(text = "Name: Suraj Patil      Contact No:8754612359 ", modifier = Modifier.padding(8.dp))
-        Text(text = "Experience:3 Years      Location:87 minutes ", modifier = Modifier.padding(8.dp))
-        CombinedButton(navController)
-        Divider(modifier = Modifier.fillMaxWidth(), color = Color.Black, thickness = 1.dp)
-        Text(text = "Name: Ramesh Jha       Contact No:7845965845 ", modifier = Modifier.padding(8.dp))
-        Text(text = "Experience:2 Years      Location:90 minutes ", modifier = Modifier.padding(8.dp))
-        CombinedButton(navController)
-        Divider(modifier = Modifier.fillMaxWidth(), color = Color.Black, thickness = 1.dp)
+//            ElecCard("Service_1", 4.0, navController)
+//            LazyColumn(
+//                modifier = Modifier.fillMaxSize()
+//            ) {
+//                items(electricianList ?: emptyList()) { electrician ->
+//                    // Render each electrician as a row
+//                    ElecCard(
+//                        name = electrician.name,
+//                        rating = 4,
+//                        navController = navController
+//                    )
+//                }
+//            }
+//        DataCard(navController = navController)
+//        Divider(modifier = Modifier.fillMaxWidth(), color = Color.Black, thickness = 1.dp)
+//            if (electricianList != null) {
+//                Text(text = electricianList[0].name, modifier = Modifier.padding(8.dp))
+//            }
+//            if (electricianList != null) {
+//                Text(text = electricianList[0].contact.toString(), modifier = Modifier.padding(8.dp))
+//            }
+//        CombinedButton(navController)
+//        Divider(modifier = Modifier.fillMaxWidth(), color = Color.Black, thickness = 1.dp)
+//        Text(text = "Name: Prashant Rai     Contact No:7564215987 ", modifier = Modifier.padding(8.dp))
+//        Text(text = "Experience:1 Years      Location:25 minutes ", modifier = Modifier.padding(8.dp))
+//        CombinedButton(navController)
+//        Divider(modifier = Modifier.fillMaxWidth(), color = Color.Black, thickness = 1.dp)
+//        Text(text = "Name: Amit Shah        Contact No:7543265145 ", modifier = Modifier.padding(8.dp))
+//        Text(text = "Experience:5 Years      Location:45 minutes ", modifier = Modifier.padding(8.dp))
+//        CombinedButton(navController)
+//        Divider(modifier = Modifier.fillMaxWidth(), color = Color.Black, thickness = 1.dp)
+//        Text(text = "Name: Santosh Jain     Contact No:9453651265 ", modifier = Modifier.padding(8.dp))
+//        Text(text = "Experience:2 Years      Location:60 minutes ", modifier = Modifier.padding(8.dp))
+//        CombinedButton(navController)
+//        Divider(modifier = Modifier.fillMaxWidth(), color = Color.Black, thickness = 1.dp)
+//        Text(text = "Name: Khush Rotak      Contact No:7542651535 ", modifier = Modifier.padding(8.dp))
+//        Text(text = "Experience:3 Years      Location:10 minutes ", modifier = Modifier.padding(8.dp))
+//        CombinedButton(navController)
+//        Divider(modifier = Modifier.fillMaxWidth(), color = Color.Black, thickness = 1.dp)
+//        Text(text = "Name: Raj Kubal        Contact No:7598463215 ", modifier = Modifier.padding(8.dp))
+//        Text(text = "Experience:5 Years      Location:75 minutes ", modifier = Modifier.padding(8.dp))
+//        CombinedButton(navController)
+//        Divider(modifier = Modifier.fillMaxWidth(), color = Color.Black, thickness = 1.dp)
+//        Text(text = "Name: Abdul Rafique    Contact No:8756421156 ", modifier = Modifier.padding(8.dp))
+//        Text(text = "Experience:3 Years      Location:76 minutes ", modifier = Modifier.padding(8.dp))
+//        CombinedButton(navController)
+//        Divider(modifier = Modifier.fillMaxWidth(), color = Color.Black, thickness = 1.dp)
+//        Text(text = "Name: Suraj Patil      Contact No:8754612359 ", modifier = Modifier.padding(8.dp))
+//        Text(text = "Experience:3 Years      Location:87 minutes ", modifier = Modifier.padding(8.dp))
+//        CombinedButton(navController)
+//        Divider(modifier = Modifier.fillMaxWidth(), color = Color.Black, thickness = 1.dp)
+//        Text(text = "Name: Ramesh Jha       Contact No:7845965845 ", modifier = Modifier.padding(8.dp))
+//        Text(text = "Experience:2 Years      Location:90 minutes ", modifier = Modifier.padding(8.dp))
+//        CombinedButton(navController)
+//        Divider(modifier = Modifier.fillMaxWidth(), color = Color.Black, thickness = 1.dp)
     }
-
+            electricianList?.let{ electricians ->
+                items(items = electricians){
+                    Log.d("Electrician-name", it.name)
+                    Log.d("Electrician-rating", it.rating.toString())
+                    ElecCard(name = it.name, rating = it.rating, navController = navController)
+                }
+            }
+        }
         }
     }
 }
@@ -210,62 +233,11 @@ fun ProviderInfo(name: String, ){
         )
     }
 }
-@Composable
-fun BookButton(navController: NavController) {
-    Button(
 
-        onClick = {
-            navController.navigate(Screens.ElectricianData.route)
-        },
-        shape = RoundedCornerShape(10.dp),
-        contentPadding = ButtonDefaults.ContentPadding,
-        modifier = Modifier
-            .width(200.dp)
-    ) {
-        Icon(
-            imageVector = Icons.Default.CalendarMonth,
-            contentDescription = null
-        )
-        Text(
-            text = "Book Service",
-            letterSpacing = 1.sp
 
-        )
-    }
-}
-@Composable
-fun CallButton(navController: NavController) {
-    Button(
-        onClick = {
-            navController.navigate(Screens.ElectricianData.route)
-        },
-        shape = RoundedCornerShape(10.dp),
-        contentPadding = ButtonDefaults.ContentPadding,
-        modifier = Modifier
-            .width(170.dp)
-    ) {
-        Icon(
-            imageVector = Icons.Default.Phone,
-            contentDescription = null
-        )
-        Text(
-            text = "Call",
-            letterSpacing = 1.sp
-
-        )
-    }
-}
-@Composable
-fun CombinedButton(navController: NavController) {
-    Row {
-        BookButton(navController)
-        Spacer(modifier = Modifier.width(20.dp))
-        CallButton(navController)
-    }
-}
 
 @Composable
-fun CardElevation(name: String, rating: Int, navController: NavController) {
+fun ElecCard(name: String, rating: Float, navController: NavController) {
     Surface(
         shape = RoundedCornerShape(16.dp),
         color = Color(0xFFDAE1E7),

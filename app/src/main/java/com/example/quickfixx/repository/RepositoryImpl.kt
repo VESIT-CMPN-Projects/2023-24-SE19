@@ -1,17 +1,15 @@
 package com.example.quickfixx.repository
 
-import android.util.Log
-import com.example.quickfixx.api.RetrofitInstance
-import com.example.quickfixx.api.TestApi
-import com.example.quickfixx.model.Post
+import com.example.quickfixx.api.ElectricianApi
+import com.example.quickfixx.model.Electrician
 import javax.inject.Inject
 
-class Repository @Inject constructor(
-    private val api: TestApi
-) {
+class RepositoryImpl @Inject constructor(
+    private val api: ElectricianApi
+) : Repository{
 
-    suspend fun getPost(): Post?{
-        return api.getPost().body()
+    override suspend fun getAllElectrician(): List<Electrician>?{
+        return api.getAllElectrician().body()
     }
 
 }

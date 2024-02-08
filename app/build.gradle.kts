@@ -2,6 +2,9 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("com.google.gms.google-services")
+    id ("com.google.dagger.hilt.android")
+    id("kotlin-kapt")
+    id("com.google.devtools.ksp")
 }
 
 android {
@@ -19,6 +22,8 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+        val GOOGLE_API_KEY="AIzaSyAkN_jPxWr8xNsZmMa8wF4jQIVFgNk-w7U"
+        buildConfigField("String", "GOOGLE_API_KEY", "\"${GOOGLE_API_KEY}\"")
     }
 
     buildTypes {
@@ -40,6 +45,7 @@ android {
     buildFeatures {
         compose = true
         viewBinding = true
+        buildConfig= true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.8"
@@ -103,5 +109,11 @@ dependencies {
     // LifeCycle
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
+
+//    Dagger hilt
+    implementation("com.google.dagger:hilt-android:2.48")
+    implementation("androidx.hilt:hilt-navigation-compose:1.1.0")
+    ksp("androidx.hilt:hilt-compiler:1.1.0")
+    kapt("com.google.dagger:hilt-android-compiler:2.48")
 
 }
