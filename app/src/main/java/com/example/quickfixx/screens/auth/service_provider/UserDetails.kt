@@ -325,7 +325,7 @@ fun CardElevation_user(name: String, rating: Int, navController: NavController) 
                         .size(width = 100.dp, height = 140.dp)
                 ) {
                     Image(
-                        painter = painterResource(id = R.drawable.qf_app_logo),
+                        painter = painterResource(id = R.drawable.biharimajdur),
                         contentScale = ContentScale.Crop,
                         contentDescription = null,
                     )
@@ -414,7 +414,7 @@ fun CardElevation_user(name: String, rating: Int, navController: NavController) 
                                 Spacer(modifier = Modifier.width(4.dp))
                                 repeat(5) { index ->
                                     val starColor =
-                                        if (index < rating) Color(0xFFDAE1E7) else Color.Gray
+                                        if (index < rating) Color.Yellow else Color.Gray
 
                                     Icon(
                                         painter = painterResource(id = baseline_star_outline_24),
