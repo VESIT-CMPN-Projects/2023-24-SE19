@@ -3,6 +3,7 @@
 package com.example.quickfixx.screens.auth
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -54,10 +55,13 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import android.net.Uri
+
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
@@ -125,7 +129,7 @@ fun ProviderDetails(navController: NavController) {
                     reviews = listOf(
                         Review(username = "User1", rating = 5, comment = "Great service!"),
                         Review(username = "User2", rating = 4, comment = "Good experience"),
-                        // Add more reviews as needed
+                        
                     )
                 )
             }
@@ -220,7 +224,6 @@ fun Summary(
 
                             Spacer(modifier = Modifier.height(2.dp))
 
-                            // Display summary as an unordered list
                             Column(
                                 modifier = Modifier.padding(start = 16.dp)
                             ) {
@@ -232,7 +235,6 @@ fun Summary(
 
                             Spacer(modifier = Modifier.height(4.dp))
 
-                            // ... (Same as before)
                         }
                     }
                 }
@@ -259,11 +261,9 @@ fun SummaryItem(icon: ImageVector, text: String) {
     }
 }
 
-
-// ...
-
 @Composable
 fun CardElevation1(name: String, rating: Int, navController: NavController) {
+    val context = LocalContext.current
     Surface(
         shape = RoundedCornerShape(16.dp),
         color = Color(0xFFDAE1E7),
@@ -396,7 +396,6 @@ fun CardElevation1(name: String, rating: Int, navController: NavController) {
                                 modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 8.dp)
                             )
 
-                            // Use a Row to place buttons side by side
                             Row(
                                 modifier = Modifier.fillMaxWidth(),
                                 horizontalArrangement = Arrangement.spacedBy(20.dp),
@@ -440,6 +439,57 @@ fun CardElevation1(name: String, rating: Int, navController: NavController) {
                                         style = MaterialTheme.typography.titleLarge
                                     )
                                 }
+                                    Row(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        horizontalArrangement = Arrangement.spacedBy(20.dp),
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        OutlinedButton(
+                                            modifier = Modifier
+                                                .weight(1f)
+                                                .height(40.dp),
+                                            shape = RoundedCornerShape(8.dp),
+                                            colors = ButtonDefaults.buttonColors(
+                                                contentColor = Color.Black,
+                                                containerColor = Color.White
+                                            ),
+                                            onClick = { /* TODO: Handle booking action */ }
+                                        ) {
+                                            Text(
+                                                text = "Book",
+                                                fontSize = 11.sp,
+                                                fontWeight = FontWeight.SemiBold,
+                                                style = MaterialTheme.typography.titleLarge
+                                            )
+                                        }
+
+                                        OutlinedButton(
+                                            modifier = Modifier
+                                                .weight(1f)
+                                                .height(40.dp),
+                                            shape = RoundedCornerShape(8.dp),
+                                            border = BorderStroke(1.dp, Color.Blue),
+                                            colors = ButtonDefaults.buttonColors(
+                                                contentColor = Color.Blue,
+                                                containerColor = Color.White,
+                                            ),
+                                            onClick = {
+                        
+                                                val phoneNumber = "7045432201" 
+                                                val intent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:$phoneNumber"))
+                                                context.startActivity(intent)
+                                            }
+                                        ) {
+                                            Text(
+                                                text = "Call",
+                                                fontSize = 11.sp,
+                                                fontWeight = FontWeight.SemiBold,
+                                                style = MaterialTheme.typography.titleLarge
+                                            )
+                                        }
+                                    }
+                                }
+
                             }
                         }
                     }
@@ -447,7 +497,7 @@ fun CardElevation1(name: String, rating: Int, navController: NavController) {
             }
         }
     }
-}
+
 @Composable
 fun ReviewCard(username: String, rating: Int, comment: String) {
     Card(
