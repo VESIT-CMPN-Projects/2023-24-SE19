@@ -74,6 +74,9 @@ dependencies {
     implementation ("com.google.maps.android:maps-compose:4.3.2")
     implementation ("com.google.android.gms:play-services-maps:18.2.0")
 
+    // Add the Firebase Core and Messaging dependencies
+    implementation ("com.google.firebase:firebase-core:20.0.0")
+    implementation ("com.google.firebase:firebase-messaging:23.0.0")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
@@ -115,5 +118,8 @@ dependencies {
     implementation("androidx.hilt:hilt-navigation-compose:1.1.0")
     ksp("androidx.hilt:hilt-compiler:1.1.0")
     kapt("com.google.dagger:hilt-android-compiler:2.48")
+
+
+    implementation("io.coil-kt:coil-compose:2.5.0")
 
 }

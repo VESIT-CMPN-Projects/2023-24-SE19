@@ -1,5 +1,5 @@
 
-package com.example.quickfixx.screens.auth
+package com.example.quickfixx.screens.auth.service_provider
 
 import android.annotation.SuppressLint
 import android.content.Intent
@@ -75,6 +75,8 @@ import androidx.navigation.NavController
 import com.example.quickfixx.R
 import com.example.quickfixx.R.drawable.baseline_star_outline_24
 import com.example.quickfixx.navigation.Screens
+import com.example.quickfixx.screens.auth.SummaryItem
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun UserDetails(navController: NavController) {
