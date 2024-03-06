@@ -26,4 +26,5 @@ object RetrofitInstance {
 
 //    val retrofitData = retrofitBuilder.getPost()
 
+
 }

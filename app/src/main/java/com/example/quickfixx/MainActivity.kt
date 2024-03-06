@@ -1,6 +1,9 @@
 package com.example.quickfixx
 
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
+import android.Manifest
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
@@ -14,6 +17,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
@@ -26,12 +31,17 @@ import com.example.quickfixx.presentation.sign_in.GoogleAuthUiClient
 import com.example.quickfixx.presentation.sign_in.LoginInScreen
 import com.example.quickfixx.presentation.sign_in.SignInViewModel
 import com.example.quickfixx.screens.auth.Electrician.ElectricianData
+import com.example.quickfixx.screens.auth.ProviderDetails
 import com.example.quickfixx.screens.auth.WelcomePageScreen
+import com.example.quickfixx.screens.auth.service_provider.UserDetails
 import com.example.quickfixx.ui.theme.QuickFixxTheme
 import com.google.ai.client.generativeai.GenerativeModel
 import com.google.android.gms.auth.api.identity.Identity
+import com.google.android.gms.tasks.Task
+import com.google.firebase.messaging.FirebaseMessaging
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -51,7 +61,21 @@ class MainActivity : ComponentActivity() {
 
                 apiKey = BuildConfig.GOOGLE_API_KEY
             )
-
+//        dNSs0pmYTcufbm3zVeQf13:APA91bFTS_oN-UjgGndolIrh_Ja5MF9-aGojMcj8g2AdBsAECUCnljQGBKO54nPWct3m5Eh1BceE9OmujIDpWKcwFjsXrH6DbZZLIWRiwFfdaKKwLIy2206rrsRlpmoUY8g7UihgnofL
+//        dNSs0pmYTcufbm3zVeQf13:APA91bFTS_oN-UjgGndolIrh_Ja5MF9-aGojMcj8g2AdBsAECUCnljQGBKO54nPWct3m5Eh1BceE9OmujIDpWKcwFjsXrH6DbZZLIWRiwFfdaKKwLIy2206rrsRlpmoUY8g7UihgnofL
+        Log.d("FIREBASE MESSAGING", "STARTED")
+        // Get the device token
+        FirebaseMessaging.getInstance().getToken()
+            .addOnCompleteListener { task: Task<String?> ->
+                if (task.isSuccessful) {
+                    val token = task.result
+                    Log.d("FCM Token", token!!)
+                    // Send this token to your server
+                } else {
+                    Log.e("FCM Token", "Error getting token", task.exception)
+                }
+            }
+        requestNotificationPermission()
 
         setContent {
             QuickFixxTheme {
@@ -71,6 +95,20 @@ class MainActivity : ComponentActivity() {
                            val viewModel : ElectricianViewModel= hiltViewModel()
                            ElectricianData(navController = navController, viewModel)
                        }
+                        composable("UserDetails"){
+                            UserDetails(navController = navController)
+                        }
+                        composable("profile"){
+                            ProviderDetails(navController = navController,
+                                onBook = {
+                                    Toast.makeText(
+                                        applicationContext,
+                                        "Booking in process",
+                                        Toast.LENGTH_LONG
+                                    ).show()
+
+                                })
+                        }
 
 
                         composable("sign_in") {
@@ -157,6 +195,8 @@ class MainActivity : ComponentActivity() {
 //                                }
 //                            )
 //                        }
+
+
                         
                         composable("home"){
                             com.example.quickfixx.presentation.profile.HomePage(navController = navController,
@@ -177,6 +217,22 @@ class MainActivity : ComponentActivity() {
 
                     }
                 }
+            }
+        }
+    }
+    private fun requestNotificationPermission() {
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            val hasPermission = ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.POST_NOTIFICATIONS
+            ) == PackageManager.PERMISSION_GRANTED
+
+            if(!hasPermission) {
+                ActivityCompat.requestPermissions(
+                    this,
+                    arrayOf(Manifest.permission.POST_NOTIFICATIONS),
+                    0
+                )
             }
         }
     }

@@ -161,7 +161,7 @@ fun HomePage(navController: NavController) {
 
                     ) {
                         Button(onClick = {
-                            navController.navigate("electrician")
+                            navController.navigate("UserDetails")
                         },
                             modifier = Modifier.size(24.dp)) {
                             Text(text = "Electrician")
@@ -235,64 +235,3 @@ fun BigButton(text: String, icon: ImageVector, navController: NavController) {
         Text(text = text, color = Color.White)
     }
 }
-
-//@OptIn(ExperimentalMaterial3Api::class)
-//@Composable
-//fun Navtest(scope: CoroutineScope, drawerState: DrawerState) {
-////    val drawerState = rememberDrawerState(DrawerValue.Closed)
-////    val scope = rememberCoroutineScope()
-//
-//    // Icons and their corresponding labels
-//    val iconData = listOf(
-//        Icons.Default.CalendarMonth to "Book",
-//        Icons.Default.Timelapse to "Estimated time",
-//        Icons.Default.Email to "Customer service"
-//    )
-//
-//    val selectedItem = remember { mutableStateOf(iconData[0]) }
-//
-//    ModalNavigationDrawer(
-//        drawerState = drawerState,
-//        drawerContent = {
-//            ModalDrawerSheet {
-//                Spacer(Modifier.height(12.dp))
-//                iconData.forEach { (item, label) ->
-//                    NavigationDrawerItem(
-//                        icon = { Icon(item, contentDescription = null) },
-//                        label = { Text(label) },
-//                        selected = item == selectedItem.value.first,
-//                        onClick = {
-//                            scope.launch { drawerState.close() }
-//                            selectedItem.value = item to label
-//                        },
-//                        modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
-//                    )
-//                }
-//            }
-//        },
-//        content = {
-//            Column(
-//                modifier = Modifier.fillMaxSize(),
-//                horizontalAlignment = Alignment.CenterHorizontally
-//            ) {
-//                IconButton(
-//                    onClick = {
-//                        // Use the provided scope to perform operations
-//                        scope.launch {
-//                            // Perform some asynchronous operation
-//                            // For example, open the navigation bar
-//                            drawerState.open()
-//                        }
-//                    }
-//                ) {
-//                    Icon(
-//                        imageVector = Icons.Default.Menu,
-//                        contentDescription = "Menu icon",
-//                        tint = MaterialTheme.colorScheme.onSurface
-//                    )
-//                }
-//            }
-//        }
-//    )
-//}
-

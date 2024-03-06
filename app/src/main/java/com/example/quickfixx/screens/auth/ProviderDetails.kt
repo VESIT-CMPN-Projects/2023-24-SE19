@@ -76,7 +76,8 @@ import com.example.quickfixx.navigation.Screens
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProviderDetails(navController: NavController) {
+fun ProviderDetails(navController: NavController,
+                    onBook : ()->Unit) {
 
     Surface(
         modifier = Modifier.fillMaxWidth(),
@@ -112,7 +113,7 @@ fun ProviderDetails(navController: NavController) {
                     .verticalScroll(rememberScrollState())
             ) {
 
-                Text(text = "Electricians",
+                Text(text = "Profile",
                     Modifier
                         .padding(top = 5.dp, bottom = 9.dp, start = 9.dp)
                         .fillMaxWidth()
@@ -123,12 +124,12 @@ fun ProviderDetails(navController: NavController) {
                     textAlign = TextAlign.Left,
                     textDecoration = TextDecoration.Underline
                 )
-                CardElevation1("Service_1", 4, navController)
-                Summary("Provider_Name", 4, 4000, 300, 2, true, navController)
+                CardElevation1("Mukesh", 4, navController, onBook)
+                Summary("Mukesh", 4, 4000, 300, 2, true, navController)
                 ReviewsSection(
                     reviews = listOf(
-                        Review(username = "User1", rating = 5, comment = "Great service!"),
-                        Review(username = "User2", rating = 4, comment = "Good experience"),
+                        Review(username = "Sarang", rating = 5, comment = "Great service!"),
+                        Review(username = "Akshat", rating = 4, comment = "Good experience"),
                         
                     )
                 )
@@ -262,7 +263,7 @@ fun SummaryItem(icon: ImageVector, text: String) {
 }
 
 @Composable
-fun CardElevation1(name: String, rating: Int, navController: NavController) {
+fun CardElevation1(name: String, rating: Int, navController: NavController, onBook: () -> Unit) {
     val context = LocalContext.current
     Surface(
         shape = RoundedCornerShape(16.dp),
@@ -376,7 +377,7 @@ fun CardElevation1(name: String, rating: Int, navController: NavController) {
                                 Spacer(modifier = Modifier.width(4.dp))
                                 repeat(5) { index ->
                                     val starColor =
-                                        if (index < rating) Color(0xFFDAE1E7) else Color.Gray
+                                        if (index < rating) Color.Yellow else Color.Gray
 
                                     Icon(
                                         painter = painterResource(id = baseline_star_outline_24),
@@ -410,7 +411,10 @@ fun CardElevation1(name: String, rating: Int, navController: NavController) {
                                         contentColor = Color.Black,
                                         containerColor = Color.White
                                     ),
-                                    onClick = { /*TODO*/ }
+                                    onClick = {
+                                        onBook()
+                                        navController.navigate("profile")
+                                    }
                                 ) {
                                     Text(
                                         text = "Book",
@@ -453,7 +457,7 @@ fun CardElevation1(name: String, rating: Int, navController: NavController) {
                                                 contentColor = Color.Black,
                                                 containerColor = Color.White
                                             ),
-                                            onClick = { /* TODO: Handle booking action */ }
+                                            onClick = { onBook() }
                                         ) {
                                             Text(
                                                 text = "Book",

@@ -10,4 +10,5 @@ enum class QFScreens {
     Navtest,
     CustomerSupport,
     VisitorsScreen,
+    UserDetails,
 }
