@@ -24,7 +24,17 @@ object RetrofitInstance {
         return retrofitBuilder
     }
 
-//    val retrofitData = retrofitBuilder.getPost()
+    @Provides
+    @Singleton
+    fun userApi(): UserAPI{
+        val retrofitBuilder = Retrofit.Builder()
+            .baseUrl(Constants.BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(UserAPI::class.java)
+        return retrofitBuilder
+
+    }
 
 
 }

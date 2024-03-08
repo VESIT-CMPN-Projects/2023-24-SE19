@@ -37,8 +37,23 @@ class ElectricianViewModel @Inject constructor(
                     repository.getAllElectrician()
                 }.await()
 
+                val acrepair = async {
+                    repository.getElectricianByACService()
+                }.await()
+
+                val tvrepair = async {
+                    repository.getElectricianByTVRepair()
+                }.await()
+
+                val circuit = async{
+                    repository.getElectricianByCircuit()
+                }.await()
+
                 _state.value = state.value.copy(
-                    data = electricians
+                    data = electricians,
+                    acservice = acrepair,
+                    tvservice = tvrepair,
+                    circuitService = circuit
                 )
             } catch (e: Exception) {
                 Log.e("ElectricianViewModel", "Error fetching post", e)
@@ -50,13 +65,3 @@ class ElectricianViewModel @Inject constructor(
     }
 
 }
-
-//    val myResponse : MutableLiveData<Post> = MutableLiveData()
-//
-//    fun getPost(){
-////        Launch Kotlin coroutine
-//        viewModelScope.launch {
-//            val response: Post = repository.getPost()
-//            myResponse.value= response
-//        }
-//    }

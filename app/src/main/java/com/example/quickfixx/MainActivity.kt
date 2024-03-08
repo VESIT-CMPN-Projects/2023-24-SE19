@@ -61,8 +61,7 @@ class MainActivity : ComponentActivity() {
 
                 apiKey = BuildConfig.GOOGLE_API_KEY
             )
-//        dNSs0pmYTcufbm3zVeQf13:APA91bFTS_oN-UjgGndolIrh_Ja5MF9-aGojMcj8g2AdBsAECUCnljQGBKO54nPWct3m5Eh1BceE9OmujIDpWKcwFjsXrH6DbZZLIWRiwFfdaKKwLIy2206rrsRlpmoUY8g7UihgnofL
-//        dNSs0pmYTcufbm3zVeQf13:APA91bFTS_oN-UjgGndolIrh_Ja5MF9-aGojMcj8g2AdBsAECUCnljQGBKO54nPWct3m5Eh1BceE9OmujIDpWKcwFjsXrH6DbZZLIWRiwFfdaKKwLIy2206rrsRlpmoUY8g7UihgnofL
+
         Log.d("FIREBASE MESSAGING", "STARTED")
         // Get the device token
         FirebaseMessaging.getInstance().getToken()
@@ -85,6 +84,12 @@ class MainActivity : ComponentActivity() {
 
                 ) {
                     val navController = rememberNavController()
+                    LaunchedEffect(key1 = Unit) {
+                        val user = googleAuthUiClient.getSignedInUser()
+                        if (user!=null){
+
+                        }
+                    }
                     NavHost(navController = navController, startDestination = "welcome") {
                         composable("welcome"){
                             WelcomePageScreen(navController = navController)
@@ -112,7 +117,7 @@ class MainActivity : ComponentActivity() {
 
 
                         composable("sign_in") {
-                            val viewModel = viewModel<SignInViewModel>()
+                            val viewModel = hiltViewModel<SignInViewModel>()
                             val state by viewModel.state.collectAsStateWithLifecycle()
 
                             LaunchedEffect(key1 = Unit) {
@@ -149,19 +154,6 @@ class MainActivity : ComponentActivity() {
                                 }
                             }
 
-//                            SignInScreen(
-//                                state = state,
-//                                onSignInClick = {
-//                                    lifecycleScope.launch {
-//                                        val signInIntentSender = googleAuthUiClient.signIn()
-//                                        launcher.launch(
-//                                            IntentSenderRequest.Builder(
-//                                                signInIntentSender ?: return@launch
-//                                            ).build()
-//                                        )
-//                                    }
-//                                }
-//                            )
                             LoginInScreen(
                                 state = state,
                                 googleAuthUiClient,
@@ -178,26 +170,6 @@ class MainActivity : ComponentActivity() {
 
                             )
                         }
-//                        composable("profile") {
-//                            ProfileScreen(
-//                                userData = googleAuthUiClient.getSignedInUser(),
-//                                onSignOut = {
-//                                    lifecycleScope.launch {
-//                                        googleAuthUiClient.signOut()
-//                                        Toast.makeText(
-//                                            applicationContext,
-//                                            "Signed out",
-//                                            Toast.LENGTH_LONG
-//                                        ).show()
-//
-//                                        navController.popBackStack()
-//                                    }
-//                                }
-//                            )
-//                        }
-
-
-                        
                         composable("home"){
                             com.example.quickfixx.presentation.profile.HomePage(navController = navController,
                                 userData = googleAuthUiClient.getSignedInUser(),
@@ -235,17 +207,5 @@ class MainActivity : ComponentActivity() {
                 )
             }
         }
-    }
-}
-
-
-
-
-
-//@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    QuickFixxTheme {
-
     }
 }

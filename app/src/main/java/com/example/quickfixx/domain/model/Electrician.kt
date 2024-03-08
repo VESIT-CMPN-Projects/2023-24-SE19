@@ -1,4 +1,4 @@
-package com.example.quickfixx.model
+package com.example.quickfixx.domain.model
 
 data class Electrician(
     val name : String,
