@@ -67,7 +67,7 @@ import com.example.quickfixx.navigation.Screens
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ElectricianData(navController: NavController) {
+fun ElectricianData2(navController: NavController) {
 
     Surface(
         modifier = Modifier.fillMaxWidth(),

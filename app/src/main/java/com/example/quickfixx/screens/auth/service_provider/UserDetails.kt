@@ -1,4 +1,3 @@
-
 package com.example.quickfixx.screens.auth.service_provider
 
 import android.annotation.SuppressLint
@@ -60,6 +59,9 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import android.net.Uri
+import androidx.compose.material.icons.filled.AccountBalanceWallet
+import androidx.compose.material.icons.filled.Maximize
+import androidx.compose.material.icons.filled.SyncAlt
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -115,7 +117,7 @@ fun UserDetails(navController: NavController) {
                     .fillMaxSize()
                     .verticalScroll(rememberScrollState())
             ) {
-                Text(text = "Electricians",
+                Text(text = "My Profile",
                     Modifier
                         .padding(top = 5.dp, bottom = 9.dp, start = 9.dp)
                         .fillMaxWidth()
@@ -126,8 +128,9 @@ fun UserDetails(navController: NavController) {
                     textAlign = TextAlign.Left,
                     textDecoration = TextDecoration.Underline
                 )
-                CardElevation_user("Service_1", 4, navController)
-                Summary_user("User Name", 4, 5, 30, 50, "AYZAYZAYAZ",10, 3, navController)
+                CardElevation_user("Mukesh", 4, navController)
+                Summary_user("Rahul", 4, 5, 30, 150, "Ghatkopar",10, 3, navController)
+                Summary_user("Aniket", 3, 7, 45, 250, "Vikhroli",10, 3, navController)
                 StatsRecord(
                     moneyEarned = "$1000",
                     hoursWorked = "50",
@@ -248,9 +251,9 @@ fun Summary_user(
                             Column(
                                 modifier = Modifier.padding(start = 16.dp)
                             ) {
-                                SummaryItem(Icons.Default.Timer, "Distance: $distance km")
+                                SummaryItem(Icons.Default.SyncAlt, "Distance: $distance km")
                                 SummaryItem(Icons.Default.Timer, "Time: $time min")
-                                SummaryItem(Icons.Default.Timer, "Price: $$price")
+                                SummaryItem(Icons.Default.AccountBalanceWallet, "Price: $$price")
                                 SummaryItem(Icons.Default.ThumbUp, "Location: $location")
                             }
 
@@ -327,7 +330,7 @@ fun CardElevation_user(name: String, rating: Int, navController: NavController) 
                         .size(width = 100.dp, height = 140.dp)
                 ) {
                     Image(
-                        painter = painterResource(id = R.drawable.biharimajdur),
+                        painter = painterResource(id = R.drawable.worker1),
                         contentScale = ContentScale.Crop,
                         contentDescription = null,
                     )

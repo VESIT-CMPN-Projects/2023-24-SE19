@@ -1,5 +1,5 @@
 package com.example.quickfixx.presentation.sign_in
 data class SignInState(
-    val isSignInSuccessful: Boolean = false,
+    val isSignInSuccessful: Boolean = true,
     val signInError: String? = null
 )
