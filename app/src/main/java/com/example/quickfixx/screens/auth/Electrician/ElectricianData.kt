@@ -5,9 +5,11 @@ package com.example.quickfixx.screens.auth.Electrician
 import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -20,6 +22,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -41,10 +45,19 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Tab
+import androidx.compose.material3.TabRow
+import androidx.compose.material3.TabRowDefaults
+import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -64,19 +77,24 @@ import com.example.quickfixx.R
 import com.example.quickfixx.R.drawable.baseline_star_outline_24
 import com.example.quickfixx.ViewModels.ElectricianViewModel
 import com.example.quickfixx.navigation.Screens
-
+import kotlinx.coroutines.launch
 
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "StateFlowValueCalledInComposition")
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
-fun ElectricianData(navController: NavController, viewModel: ElectricianViewModel) {
+fun ElectricianData(
+    navController: NavController,
+    viewModel: ElectricianViewModel,
+    tabIndex: Int) {
 
     val electricianList = viewModel.state.value.data
-
-    val coroutineScope = rememberCoroutineScope()
-
-//    Log.d("Electrician", electricianList.toString())
+    val ac = viewModel.state.value.acservice
+    val tv = viewModel.state.value.tvservice
+    val cirkit = viewModel.state.value.circuitService
+    val scope = rememberCoroutineScope()
+    val pagerState = rememberPagerState(pageCount = { ScreenTabs.entries.size }, initialPage = tabIndex)
+    val selectedTabIndex = remember { derivedStateOf { pagerState.currentPage } }
 
     Surface(
         modifier = Modifier.fillMaxWidth(),
@@ -103,89 +121,130 @@ fun ElectricianData(navController: NavController, viewModel: ElectricianViewMode
                         }
                     }
                     )
-            }
+            },
+
         ) {
+            Column (
+                modifier = Modifier
+                    .padding(vertical = it.calculateTopPadding())
+                    .fillMaxSize()
+            ){
 
+                TabRow(
+                    selectedTabIndex = selectedTabIndex.value,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    ScreenTabs.entries.forEachIndexed { index, currentTab ->
+                        Tab(
+                            selected = selectedTabIndex.value == index,
+                            selectedContentColor = MaterialTheme.colorScheme.primary,
+                            unselectedContentColor = MaterialTheme.colorScheme.outline,
+                            onClick = {
+                                scope.launch {
+                                    pagerState.animateScrollToPage(currentTab.ordinal)
+                                }
+                            },
+                            text = { Text(text = currentTab.text) },
 
-//                Text(text = "Experts", TextAlign= TextAlign.Start, modifier = Modifier.padding(16.dp))
+                        )
+                    }
+                }
 
-        LazyColumn(
-            modifier = Modifier
-                .padding(vertical = it.calculateTopPadding())
-                .fillMaxSize()
-//                .verticalScroll(rememberScrollState())
-        ) {
-            item{
-            Text(text = "Experts",
-                Modifier
-                    .padding(top = 5.dp, bottom = 9.dp, start = 9.dp)
-                    .fillMaxWidth()
-                    .background(MaterialTheme.colorScheme.background)
-                    .wrapContentHeight(),
-                fontSize = 24.sp,  // Set the desired font size here
-                fontWeight = FontWeight.W900,
-                textAlign = TextAlign.Left,
-                textDecoration = TextDecoration.Underline
-            )
-    }
-            electricianList?.let{ electricians ->
-                items(items = electricians){
-                    Log.d("Electrician-name", it.name)
-                    Log.d("Electrician-rating", it.rating.toString())
-                    ElecCard(name = it.name, rating = it.rating, navController = navController)
+                HorizontalPager(
+                    state = pagerState,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(1f)
+                ) {page ->
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        when (page) {
+                            0 -> {
+                                // Render electricianList for the "All" tab
+                                electricianList?.let { electricians ->
+                                    LazyColumn {
+                                        item {
+
+                                        }
+                                        items(items = electricians) {
+                                            Log.d("Electrician-name", it.name)
+                                            Log.d("Electrician-rating", it.rating.toString())
+                                            ElecCard(name = it.name, rating = it.rating, navController = navController)
+                                        }
+                                    }
+                                }
+                            }
+                            1 -> {
+                                // Render AC service data for the "AC Repair" tab
+                                ac?.let { acService ->
+                                    LazyColumn {
+                                        item {
+
+                                        }
+                                        items(items = acService) {
+                                            Log.d("Electrician-name", it.name)
+                                            Log.d("Electrician-rating", it.rating.toString())
+                                            ElecCard(name = it.name, rating = it.rating, navController = navController)
+                                        }
+                                    }
+                                }
+                            }
+                            2 -> {
+                                // Render TV service data for the "TV Repair" tab
+                                tv?.let { tvService ->
+                                    LazyColumn {
+                                        item {
+
+                                        }
+                                        items(items = tvService) {
+                                            Log.d("Electrician-name", it.name)
+                                            Log.d("Electrician-rating", it.rating.toString())
+                                            ElecCard(name = it.name, rating = it.rating, navController = navController)
+                                        }
+                                    }
+                                }
+                            }
+                            3 -> {
+                                // Render circuit service data for the "Circuit Fix" tab
+                                cirkit?.let { circuitService ->
+                                    LazyColumn {
+                                        item {
+
+                                        }
+                                        items(items = cirkit) {
+                                            Log.d("Electrician-name", it.name)
+                                            Log.d("Electrician-rating", it.rating.toString())
+                                            ElecCard(name = it.name, rating = it.rating, navController = navController)
+                                        }
+                                    }
+                                }
+                            }
+
+                        }
                 }
             }
         }
-        }
     }
 }
-
-@Composable
-fun BookButton(navController: NavController) {
-    Button(
-
-        onClick = {
-            navController.navigate(Screens.ElectricianData.route)
-        },
-        shape = RoundedCornerShape(10.dp),
-        contentPadding = ButtonDefaults.ContentPadding,
-        modifier = Modifier
-            .width(200.dp)
-    ) {
-        Icon(
-            imageVector = Icons.Default.CalendarMonth,
-            contentDescription = null
-        )
-        Text(
-            text = "Book Service",
-            letterSpacing = 1.sp
-
-        )
-    }
 }
-@Composable
-fun CallButton(navController: NavController) {
-    Button(
-        onClick = {
-            navController.navigate(Screens.ElectricianData.route)
-        },
-        shape = RoundedCornerShape(10.dp),
-        contentPadding = ButtonDefaults.ContentPadding,
-        modifier = Modifier
-            .width(170.dp)
-    ) {
-        Icon(
-            imageVector = Icons.Default.Phone,
-            contentDescription = null
-        )
-        Text(
-            text = "Call",
-            letterSpacing = 1.sp
-
-        )
-    }
+enum class ScreenTabs(
+    val text: String
+) {
+    All(
+        text = "All"
+    ),
+    ACRepair(
+        text = "AC Repair"
+    ),
+    TVRepair(
+        text = "TV Repair"
+    ),
+    Circuit(
+        text="Home Circuit"
+    )
 }
-
 @Composable
 fun ElecCard(name: String, rating: Float, navController: NavController) {
     Surface(
@@ -230,7 +289,7 @@ fun ElecCard(name: String, rating: Float, navController: NavController) {
                         modifier = Modifier
                             .padding(2.dp)
                             .fillMaxWidth()
-                            .size(width = 500.dp,height =280.dp )
+                            .size(width = 500.dp, height = 280.dp)
                             .padding(start = 16.dp),
                         color = Color(0xFFD1D5E1)
                     ) {
@@ -346,5 +405,5 @@ fun ElecCard(name: String, rating: Float, navController: NavController) {
             }
 
         }
-    }}
-
+    }
+}

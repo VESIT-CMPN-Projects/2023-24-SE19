@@ -27,11 +27,14 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.quickfixx.ViewModels.ElectricianViewModel
+import com.example.quickfixx.domain.model.User
+import com.example.quickfixx.presentation.Messages
 import com.example.quickfixx.presentation.sign_in.GoogleAuthUiClient
 import com.example.quickfixx.presentation.sign_in.LoginInScreen
 import com.example.quickfixx.presentation.sign_in.SignInViewModel
 import com.example.quickfixx.screens.auth.Electrician.ElectricianData
 import com.example.quickfixx.screens.auth.ProviderDetails
+import com.example.quickfixx.screens.auth.SignUpScreen
 import com.example.quickfixx.screens.auth.WelcomePageScreen
 import com.example.quickfixx.screens.auth.service_provider.UserDetails
 import com.example.quickfixx.ui.theme.QuickFixxTheme
@@ -61,8 +64,7 @@ class MainActivity : ComponentActivity() {
 
                 apiKey = BuildConfig.GOOGLE_API_KEY
             )
-//        dNSs0pmYTcufbm3zVeQf13:APA91bFTS_oN-UjgGndolIrh_Ja5MF9-aGojMcj8g2AdBsAECUCnljQGBKO54nPWct3m5Eh1BceE9OmujIDpWKcwFjsXrH6DbZZLIWRiwFfdaKKwLIy2206rrsRlpmoUY8g7UihgnofL
-//        dNSs0pmYTcufbm3zVeQf13:APA91bFTS_oN-UjgGndolIrh_Ja5MF9-aGojMcj8g2AdBsAECUCnljQGBKO54nPWct3m5Eh1BceE9OmujIDpWKcwFjsXrH6DbZZLIWRiwFfdaKKwLIy2206rrsRlpmoUY8g7UihgnofL
+
         Log.d("FIREBASE MESSAGING", "STARTED")
         // Get the device token
         FirebaseMessaging.getInstance().getToken()
@@ -79,24 +81,61 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             QuickFixxTheme {
+
+                val viewModel = hiltViewModel<SignInViewModel>()
+                var user: User?
+
                 // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
 
                 ) {
                     val navController = rememberNavController()
+                    LaunchedEffect(key1 = Unit) {
+                        val authUser = googleAuthUiClient.getSignedInUser()
+                        authUser?.email?.let { Log.d("AUTH USER", it) }
+                        if (authUser!=null){
+                            Log.d("STEP", authUser.email)
+                            user = viewModel.getUserByEmail(authUser.email)
+                            Log.d("STEP", "---------------------")
+                            if (user ==null){
+                                navController.navigate("sign_up")
+                                Toast.makeText(
+                                    applicationContext,
+                                    "Sign in to continue",
+                                    Toast.LENGTH_LONG
+                                ).show()
+                            }else{
+                                navController.navigate("home"){
+                                    popUpTo(0)
+                                }
+                            }
+                        }else{
+                            navController.navigate("sign_up"){
+                                popUpTo(0)
+                            }
+                        }
+                    }
                     NavHost(navController = navController, startDestination = "welcome") {
                         composable("welcome"){
                             WelcomePageScreen(navController = navController)
                         }
 
-                       composable("electricians"){
-//                           val viewModel = ElectricianViewModel(repository = Repository(api = ))
-                           val viewModel : ElectricianViewModel= hiltViewModel()
-                           ElectricianData(navController = navController, viewModel)
-                       }
-                        composable("UserDetails"){
+//                       composable("electricians"){
+//                           val EviewModel : ElectricianViewModel= hiltViewModel()
+//                           ElectricianData(navController = navController, EviewModel)
+//                       }
+                        composable("electricians/{tabIndex}") { backStackEntry ->
+                            val arguments = requireNotNull(backStackEntry.arguments)
+                            val tabIndex = arguments.getString("tabIndex")?.toIntOrNull() ?: 0
+                            val EviewModel: ElectricianViewModel = hiltViewModel()
+                            ElectricianData(navController = navController, viewModel = EviewModel, tabIndex = tabIndex)
+                        }
+                        composable("user_profile"){
                             UserDetails(navController = navController)
+                        }
+                        composable("messages"){
+                            Messages(navController = navController)
                         }
                         composable("profile"){
                             ProviderDetails(navController = navController,
@@ -109,19 +148,8 @@ class MainActivity : ComponentActivity() {
 
                                 })
                         }
-
-
-                        composable("sign_in") {
-                            val viewModel = viewModel<SignInViewModel>()
+                        composable("sign_up"){
                             val state by viewModel.state.collectAsStateWithLifecycle()
-
-                            LaunchedEffect(key1 = Unit) {
-                                if(googleAuthUiClient.getSignedInUser() != null) {
-                                    Log.d("FromLoginPage", "Going to home page")
-                                    navController.navigate("home")
-                                }
-                            }
-
                             val launcher = rememberLauncherForActivityResult(
                                 contract = ActivityResultContracts.StartIntentSenderForResult(),
                                 onResult = { result ->
@@ -144,28 +172,13 @@ class MainActivity : ComponentActivity() {
                                         Toast.LENGTH_LONG
                                     ).show()
 
-                                    navController.navigate("home")
+                                    navController.navigate("home"){
+                                        popUpTo(0)
+                                    }
                                     viewModel.resetState()
                                 }
                             }
-
-//                            SignInScreen(
-//                                state = state,
-//                                onSignInClick = {
-//                                    lifecycleScope.launch {
-//                                        val signInIntentSender = googleAuthUiClient.signIn()
-//                                        launcher.launch(
-//                                            IntentSenderRequest.Builder(
-//                                                signInIntentSender ?: return@launch
-//                                            ).build()
-//                                        )
-//                                    }
-//                                }
-//                            )
-                            LoginInScreen(
-                                state = state,
-                                googleAuthUiClient,
-                                onSignInClick = {
+                            SignUpScreen(state,navController = navController, viewModel, onSignInClick = {
                                     lifecycleScope.launch {
                                         val signInIntentSender = googleAuthUiClient.signIn()
                                         launcher.launch(
@@ -174,32 +187,11 @@ class MainActivity : ComponentActivity() {
                                             ).build()
                                         )
                                     }
-                                },
-
-                            )
+                                })
                         }
-//                        composable("profile") {
-//                            ProfileScreen(
-//                                userData = googleAuthUiClient.getSignedInUser(),
-//                                onSignOut = {
-//                                    lifecycleScope.launch {
-//                                        googleAuthUiClient.signOut()
-//                                        Toast.makeText(
-//                                            applicationContext,
-//                                            "Signed out",
-//                                            Toast.LENGTH_LONG
-//                                        ).show()
-//
-//                                        navController.popBackStack()
-//                                    }
-//                                }
-//                            )
-//                        }
 
-
-                        
                         composable("home"){
-                            com.example.quickfixx.presentation.profile.HomePage(navController = navController,
+                            com.example.quickfixx.presentation.HomePage.HomePage(navController = navController,
                                 userData = googleAuthUiClient.getSignedInUser(),
                                 onSignOut = {
                                     lifecycleScope.launch {
@@ -210,7 +202,10 @@ class MainActivity : ComponentActivity() {
                                             Toast.LENGTH_LONG
                                         ).show()
 
-                                        navController.popBackStack()
+                                        navController.navigate("sign_up"){
+                                            popUpTo(0)
+                                        }
+
                                     }
                                 })
                         }
@@ -235,17 +230,5 @@ class MainActivity : ComponentActivity() {
                 )
             }
         }
-    }
-}
-
-
-
-
-
-//@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    QuickFixxTheme {
-
     }
 }

@@ -158,7 +158,7 @@ fun LoginInScreen(
                     Button(
                         onClick = {
 //                            navController.navigate(Screens.VisitorsScreen.route)
-                            googleAuthUiClient.signinWithEmailPassword(gmail.toString(),
+                            googleAuthUiClient.signInWithEmailPassword(gmail.toString(),
                                 password.toString()
                             )
                         },

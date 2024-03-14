@@ -64,7 +64,7 @@ fun QuickFixxTheme(
 
     MaterialTheme(
         colorScheme = colorScheme,
-        typography = Typography,
+        typography = qfTypography,
         content = content
     )
 }
