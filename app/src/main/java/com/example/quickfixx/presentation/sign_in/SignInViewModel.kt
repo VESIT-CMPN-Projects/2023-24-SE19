@@ -7,6 +7,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import retrofit2.HttpException
 import javax.inject.Inject
 
 @HiltViewModel
@@ -24,11 +25,20 @@ class SignInViewModel @Inject constructor(
         ) }
     }
 
-    suspend fun getUserByEmail(email: String): User?{
-        return repo.getByEmail(email)
+    suspend fun getUserByEmail(email: String): User? {
+        return try {
+            repo.getByEmail(email)
+        } catch (e: HttpException) {
+            if (e.code() == 500) {
+                null // User not found
+            } else {
+                throw e // Re-throw the exception for other HTTP errors
+            }
+        }
     }
 
-//    val name: String,
+
+    //    val name: String,
 //    val email: String,
 //    val password : String,
 //    val contact : String,

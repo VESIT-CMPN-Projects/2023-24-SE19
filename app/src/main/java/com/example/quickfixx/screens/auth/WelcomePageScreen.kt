@@ -66,40 +66,40 @@ fun WelcomePageScreen(
 
             Spacer(modifier = Modifier.height(130.dp))
 
-            Row (
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(2.dp),
-                horizontalArrangement = Arrangement.SpaceEvenly
-            ){
-                Button(
-                    onClick = {
-                        Log.d("MyApp", "Entering onClick for Login button")
-                        navController.navigate("sign_in")
-                    },
-                    shape = RoundedCornerShape(10.dp),
-                    contentPadding = ButtonDefaults.ContentPadding,
-                    modifier = Modifier
-                        .width(110.dp)
-                ) {
-                    Text(
-                        text = "Login",
-                        letterSpacing = 1.sp
-                    )
-                }
-                Button(
-                    onClick = {navController.navigate("sign_in")},
-                    shape = RoundedCornerShape(10.dp),
-                    contentPadding = ButtonDefaults.ContentPadding,
-                    modifier = Modifier
-                        .width(110.dp)
-                ) {
-                    Text(
-                        text = "Sign Up",
-                        letterSpacing = 1.sp
-                    )
-                }
-            }
+//            Row (
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .padding(2.dp),
+//                horizontalArrangement = Arrangement.SpaceEvenly
+//            ){
+//                Button(
+//                    onClick = {
+//                        Log.d("MyApp", "Entering onClick for Login button")
+//                        navController.navigate("sign_in")
+//                    },
+//                    shape = RoundedCornerShape(10.dp),
+//                    contentPadding = ButtonDefaults.ContentPadding,
+//                    modifier = Modifier
+//                        .width(110.dp)
+//                ) {
+//                    Text(
+//                        text = "Login",
+//                        letterSpacing = 1.sp
+//                    )
+//                }
+//                Button(
+//                    onClick = {navController.navigate("sign_up")},
+//                    shape = RoundedCornerShape(10.dp),
+//                    contentPadding = ButtonDefaults.ContentPadding,
+//                    modifier = Modifier
+//                        .width(110.dp)
+//                ) {
+//                    Text(
+//                        text = "Sign Up",
+//                        letterSpacing = 1.sp
+//                    )
+//                }
+//            }
         }
     }
 }

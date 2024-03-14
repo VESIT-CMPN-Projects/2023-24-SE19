@@ -83,14 +83,17 @@ import kotlinx.coroutines.launch
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "StateFlowValueCalledInComposition")
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
-fun ElectricianData(navController: NavController, viewModel: ElectricianViewModel) {
+fun ElectricianData(
+    navController: NavController,
+    viewModel: ElectricianViewModel,
+    tabIndex: Int) {
 
     val electricianList = viewModel.state.value.data
     val ac = viewModel.state.value.acservice
     val tv = viewModel.state.value.tvservice
     val cirkit = viewModel.state.value.circuitService
     val scope = rememberCoroutineScope()
-    val pagerState = rememberPagerState(pageCount = { ScreenTabs.entries.size })
+    val pagerState = rememberPagerState(pageCount = { ScreenTabs.entries.size }, initialPage = tabIndex)
     val selectedTabIndex = remember { derivedStateOf { pagerState.currentPage } }
 
     Surface(
@@ -221,33 +224,7 @@ fun ElectricianData(navController: NavController, viewModel: ElectricianViewMode
 
                         }
                 }
-
-//            LazyColumn(
-//            ) {
-//
-//                item {
-//                    Text(
-//                        text = "Experts",
-//                        Modifier
-//                            .padding(top = 5.dp, bottom = 9.dp, start = 9.dp)
-//                            .fillMaxWidth()
-//                            .background(MaterialTheme.colorScheme.background)
-//                            .wrapContentHeight(),
-//                        fontSize = 24.sp,  // Set the desired font size here
-//                        fontWeight = FontWeight.W900,
-//                        textAlign = TextAlign.Left,
-//                        textDecoration = TextDecoration.Underline
-//                    )
-//                }
-//                electricianList?.let { electricians ->
-//                    items(items = electricians) {
-//                        Log.d("Electrician-name", it.name)
-//                        Log.d("Electrician-rating", it.rating.toString())
-//                        ElecCard(name = it.name, rating = it.rating, navController = navController)
-//                    }
-//                }
-//            }
-        }
+            }
         }
     }
 }

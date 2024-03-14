@@ -3,7 +3,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentSender
 import android.util.Log
-import androidx.compose.runtime.MutableState
 import com.example.quickfixx.R
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
 import com.google.android.gms.auth.api.identity.BeginSignInRequest.GoogleIdTokenRequestOptions
@@ -33,7 +32,7 @@ class GoogleAuthUiClient(
         return result?.pendingIntent?.intentSender
     }
 
-    fun signinWithEmailPassword(email: String, password: String){
+    fun signInWithEmailPassword(email: String, password: String){
         auth.signInWithEmailAndPassword(email, password).addOnCompleteListener{ task->
             if(task.isSuccessful){
                 Log.d("Login", "sucess")
@@ -53,7 +52,8 @@ class GoogleAuthUiClient(
                     UserData(
                         userId = uid,
                         username = displayName,
-                        profilePictureUrl = photoUrl?.toString()
+                        profilePictureUrl = photoUrl?.toString(),
+                        email = email.toString()
                     )
                 },
                 errorMessage = null
@@ -82,7 +82,8 @@ class GoogleAuthUiClient(
         UserData(
             userId = uid,
             username = displayName,
-            profilePictureUrl = photoUrl?.toString()
+            profilePictureUrl = photoUrl?.toString(),
+            email =  email.toString()
         )
     }
 

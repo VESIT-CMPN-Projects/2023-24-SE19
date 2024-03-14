@@ -3,8 +3,10 @@ package com.example.quickfixx.screens.auth
 import android.content.ContentValues.TAG
 import android.content.pm.PackageManager.ComponentEnabledSetting
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -30,9 +32,13 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -42,20 +48,32 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.quickfixx.navigation.Screens
+import com.example.quickfixx.presentation.sign_in.SignInState
+import com.example.quickfixx.presentation.sign_in.SignInViewModel
 import com.google.firebase.auth.FirebaseAuth
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 //private lateinit var binding:ActivitySignUpBinding
-fun SignUpScreen(navController: NavController , isEnabled : Boolean = false) {
+fun SignUpScreen(state: SignInState, navController: NavController, viewModel: SignInViewModel, onSignInClick: ()->Unit) {
+    val context = LocalContext.current
+    LaunchedEffect(key1 = state.signInError) {
+        state.signInError?.let { error ->
+            Toast.makeText(
+                context,
+                error,
+                Toast.LENGTH_LONG
+            ).show()
+        }
+    }
     var Name = remember {
         mutableStateOf("")
     }
-    var ConfirmPassword = remember {
+
+    val Contact = remember {
         mutableStateOf("")
     }
-
 
     var gmail = remember {
         mutableStateOf("")
@@ -65,8 +83,33 @@ fun SignUpScreen(navController: NavController , isEnabled : Boolean = false) {
         mutableStateOf("")
     }
 
+    var nameError by remember { mutableStateOf("") }
+    var contactError by remember { mutableStateOf("") }
+    var gmailError by remember { mutableStateOf("") }
+    var passwordError by remember { mutableStateOf("") }
+
+
+    fun validateFields():Boolean{
+        val isValid = false
+        if(Name.value.equals("")){
+            nameError = "Name is required"
+        }
+        if(Contact.value.equals("")){
+            contactError = "Contact is required"
+        }
+        if(gmail.value.equals("")){
+            gmailError = "Email is required"
+        }
+        if(password.value.equals("")){
+            passwordError = "Password is required"
+        }
+
+        return !isValid
+    }
+
+
     Surface(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier.fillMaxHeight(),
         color = MaterialTheme.colorScheme.background
     ) {
         Scaffold(
@@ -98,6 +141,8 @@ fun SignUpScreen(navController: NavController , isEnabled : Boolean = false) {
             Surface(
                 modifier = Modifier.padding(it.calculateTopPadding())
             ) {
+
+
                 Column(
                     modifier = Modifier.fillMaxSize()
                 ) {
@@ -111,6 +156,30 @@ fun SignUpScreen(navController: NavController , isEnabled : Boolean = false) {
                         onValueChange = { Name.value = it },
                         enabled = true,
                         placeholder = { Text(text = "Full Name") },
+                        leadingIcon = {
+                            Icon(
+                                imageVector = Icons.Rounded.Edit,
+                                contentDescription = null
+                            )
+                        },
+                        singleLine = true,
+                        modifier = Modifier.padding(3.dp),
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.Text,
+                            imeAction = ImeAction.Done
+                        )
+                    )
+                    Spacer(modifier = Modifier.height(12.dp) )
+                    Text(
+                        text = "Contact Number",
+                        fontSize = 20.sp,
+                        modifier = Modifier.padding(12.dp)
+                    )
+                    OutlinedTextField(
+                        value = Contact.value,
+                        onValueChange = { Contact.value = it },
+                        enabled = true,
+                        placeholder = { Text(text = "Contact number") },
                         leadingIcon = {
                             Icon(
                                 imageVector = Icons.Rounded.Edit,
@@ -176,42 +245,27 @@ fun SignUpScreen(navController: NavController , isEnabled : Boolean = false) {
                         ),
                         visualTransformation = PasswordVisualTransformation()
                     )
-                    //CONFIRM PASSWORD
-                    Spacer(modifier = Modifier.height(12.dp))
-                    Text(
-                        text = "Confirm Password",
-                        fontSize = 20.sp,
-                        modifier = Modifier.padding(12.dp)
-                    )
-                    OutlinedTextField(
-                        value = ConfirmPassword.value,
-                        onValueChange = { ConfirmPassword.value = it },
-                        enabled = true,
-                        placeholder = { Text(text = "Confirm Password") },
-                        leadingIcon = {
-                            Icon(
-                                imageVector = Icons.Default.Lock,
-                                contentDescription = null
-                            )
-                        },
-                        singleLine = true,
-                        modifier = Modifier.padding(3.dp),
-                        keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Password,
-                            imeAction = ImeAction.Done
-                        ),
-                        visualTransformation = PasswordVisualTransformation()
-                    )
+
 //                      CREATE ACCOUNT BUTTON
                     Spacer(modifier = Modifier.height(12.dp))
                     Button(
                         onClick = {
-                            CreateUserInFirebase(email = gmail.value, password = password.value)
-                            navController.navigate(Screens.OTPScreen1.route)
+                            if(validateFields()){
+                                viewModel.saveUser(
+                                    Name.value,
+                                    gmail.value,
+                                    password.value,
+                                    "user",
+                                    Contact.value,
+                                    ""
+                                )
+                                Log.d("SAVE USER", Name.value)
+                                navController.navigate("home")
+                            }
                         },
+                        enabled = validateFields(),
                         shape = RoundedCornerShape(10.dp),
                         contentPadding = ButtonDefaults.ContentPadding,
-                        enabled = isEnabled,
                         modifier = Modifier
                             .width(300.dp)
                     ) {
@@ -220,18 +274,18 @@ fun SignUpScreen(navController: NavController , isEnabled : Boolean = false) {
                             letterSpacing = 1.sp
                         )
                     }
-                    Spacer(modifier = Modifier.height(12.dp))
+//                    Spacer(modifier = Modifier.height(12.dp))
                     Text(
                         text = "                   OR",
                         fontSize = 20.sp,
                         modifier = Modifier.padding(12.dp)
                     )
-                    Spacer(modifier = Modifier.height(12.dp))
+//                    Spacer(modifier = Modifier.height(12.dp))
                     Button(
 
                         onClick = {
-                            CreateUserInFirebase(email = gmail.value, password = password.value)
-                            navController.navigate(Screens.OTPScreen1.route)
+                            onSignInClick()
+//                            navController.navigate("home")
                         },
                         shape = RoundedCornerShape(10.dp),
                         contentPadding = ButtonDefaults.ContentPadding,
@@ -239,59 +293,13 @@ fun SignUpScreen(navController: NavController , isEnabled : Boolean = false) {
                             .width(300.dp)
                     ) {
                         Text(
-                            text = "Continue with Google",
+                            text = "Login with Google",
                             letterSpacing = 1.sp
 
                         )
                     }
-
-
-//                    Text(
-//                        text = "Phone number is: ${phone.value}",
-//                        fontSize = 20.sp,
-//                        modifier = Modifier.padding(12.dp)
-//                    )
-
-//                    Text(
-//                        text = "Password is: ${password.value}",
-//                        fontSize = 20.sp,
-//                        modifier = Modifier.padding(12.dp)
-//                    )
-//                    binding = ActivitySignUpBinding.inflate
-//                    setContentView(R.layout.SignUpScreen)
                 }
             }
         }
-    }
-}
-//private fun CreateUserInFirebase(email:String, password:String){
-//    FirebaseAuth
-//        .getInstance()
-//        .createUserWithEmailAndPassword(email, password)
-//        .addOnCompleteListener{
-//            Log.d(TAG,"Inside_OnCompleteListener")
-//            Log.d(TAG,"isSuccessful = ${it.isSuccessful}")
-//        }
-//        .addOnFailureListener{
-//            Log.d(TAG,"Inside_OnFailureListener")
-//            Log.d(TAG,"Exception = ${it.message}")
-//            Log.d(TAG,"Exception = ${it.localizedMessage}")
-//        }
-//}
-private fun CreateUserInFirebase(email: String, password: String) {
-    if (email.isNotEmpty() && password.isNotEmpty()) {
-        FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password)
-            .addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    // User created successfully
-                    Log.d(TAG, "User created successfully")
-                } else {
-                    // User creation failed
-                    Log.w(TAG, "User creation failed: ${task.exception}")
-                }
-            }
-    } else {
-        // Handle empty email or password error
-        Log.w(TAG, "Email or password cannot be empty")
     }
 }
