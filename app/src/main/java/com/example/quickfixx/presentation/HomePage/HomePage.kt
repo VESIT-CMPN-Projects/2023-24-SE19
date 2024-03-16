@@ -98,15 +98,15 @@ fun HomePage(navController: NavController,
             route = "home"
         ),
         BottomNavigationItem(
-            title = "Chat",
-            selectedIcon = Icons.Filled.Email,
+            title = "Messages",
+            selectedIcon = Icons.Filled.Notifications,
 //            unselectedIcon = Icons.Outlined.Notifications,
             hasNews = false,
             route = "messages"
         ),
         BottomNavigationItem(
-            title = "Settings",
-            selectedIcon = Icons.Filled.Settings,
+            title = "Profile",
+            selectedIcon = Icons.Filled.Person,
 //            unselectedIcon = Icons.Outlined.Person,
             hasNews = true,
             route = "user_profile"
@@ -153,9 +153,9 @@ fun HomePage(navController: NavController,
             NavigationBar {
                 items.forEachIndexed { index, item ->
                     NavigationBarItem(
-                        modifier = Modifier
-//                            .height(20.dp)
-                            .padding(3.dp),
+//                        modifier = Modifier
+////                            .height(20.dp)
+//                            .padding(3.dp),
                         selected = selectedItemIndex == index,
                         onClick = {
                             selectedItemIndex = index
@@ -164,17 +164,11 @@ fun HomePage(navController: NavController,
                         label = {
                             Text(text = item.title)
                         },
-                        alwaysShowLabel = false,
+//                        alwaysShowLabel = false,
                         icon = {
                             BadgedBox(
                                 badge = {
-                                    if (item.badgeCount != null) {
-                                        Badge {
-                                            Text(text = item.badgeCount.toString())
-                                        }
-                                    } else if (item.hasNews) {
-                                        Badge()
-                                    }
+//                                        Badge()
                                 }
                             ) {
                                 Icon(
@@ -189,7 +183,7 @@ fun HomePage(navController: NavController,
                 }
             }
         }
-    ) {
+    ) {padding ->
     Box(
         modifier = Modifier
             .background(AquaBlue)

@@ -29,6 +29,8 @@ import androidx.navigation.compose.rememberNavController
 import com.example.quickfixx.ViewModels.ElectricianViewModel
 import com.example.quickfixx.domain.model.User
 import com.example.quickfixx.presentation.Messages
+import com.example.quickfixx.presentation.UserScreen.ProfileScreen
+import com.example.quickfixx.presentation.UserScreen.UserCard
 import com.example.quickfixx.presentation.sign_in.GoogleAuthUiClient
 import com.example.quickfixx.presentation.sign_in.LoginInScreen
 import com.example.quickfixx.presentation.sign_in.SignInViewModel
@@ -132,8 +134,27 @@ class MainActivity : ComponentActivity() {
                             ElectricianData(navController = navController, viewModel = EviewModel, tabIndex = tabIndex)
                         }
                         composable("user_profile"){
-                            UserDetails(navController = navController)
+//                            ProfileScreen(onGoBack = { })
+                            UserCard(navController = navController,
+                                userData = googleAuthUiClient.getSignedInUser(),
+                                onSignOut = {
+                                    lifecycleScope.launch {
+                                        googleAuthUiClient.signOut()
+                                        Toast.makeText(
+                                            applicationContext,
+                                            "Signed out",
+                                            Toast.LENGTH_LONG
+                                        ).show()
+
+                                        navController.navigate("sign_up"){
+                                            popUpTo(0)
+                                        }
+
+                                    }
+                                })
+//                            UserDetails(navController = navController)
                         }
+
                         composable("messages"){
                             Messages(navController = navController)
                         }

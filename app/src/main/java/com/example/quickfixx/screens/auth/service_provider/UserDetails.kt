@@ -60,11 +60,21 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import android.net.Uri
 import androidx.compose.material.icons.filled.AccountBalanceWallet
+import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.ExitToApp
+import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Maximize
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.SyncAlt
+import androidx.compose.material3.Badge
+import androidx.compose.material3.BadgedBox
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 
 import androidx.compose.ui.text.style.TextAlign
@@ -77,12 +87,39 @@ import androidx.navigation.NavController
 import com.example.quickfixx.R
 import com.example.quickfixx.R.drawable.baseline_star_outline_24
 import com.example.quickfixx.navigation.Screens
+import com.example.quickfixx.presentation.HomePage.BottomNavigationItem
 import com.example.quickfixx.screens.auth.SummaryItem
+import com.example.quickfixx.ui.theme.DeepBlue
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun UserDetails(navController: NavController) {
-    var offerAccepted by remember { mutableStateOf(false) }
+    val items = listOf(
+        BottomNavigationItem(
+            title = "Home",
+            selectedIcon = Icons.Filled.Home,
+//            unselectedIcon = Icons.Outlined.Home,
+            hasNews = false,
+            route = "home"
+        ),
+        BottomNavigationItem(
+            title = "Chat",
+            selectedIcon = Icons.Filled.Email,
+//            unselectedIcon = Icons.Outlined.Notifications,
+            hasNews = false,
+            route = "messages"
+        ),
+        BottomNavigationItem(
+            title = "Settings",
+            selectedIcon = Icons.Filled.Settings,
+//            unselectedIcon = Icons.Outlined.Person,
+            hasNews = true,
+            route = "user_profile"
+        ),
+    )
+    var selectedItemIndex by rememberSaveable {
+        mutableStateOf(0)
+    }
 
     Surface(
         modifier = Modifier.fillMaxWidth(),
@@ -90,25 +127,61 @@ fun UserDetails(navController: NavController) {
     ) {
         Scaffold(
             topBar = {
-                TopAppBar(title = {
-                    Text(text = "QuickFixx",
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onSurface
+                TopAppBar(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(DeepBlue)
+                        .padding(0.dp),
+                    title = {
+                        Text(
+                            text = "QuickFixx",
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 30.sp,
+                            color = Color.Black,
+                        )
+                    },
+                    colors = TopAppBarDefaults.topAppBarColors(),
                     )
-                },
-                    navigationIcon = {
-                        IconButton(onClick = {
-                            navController.navigate(Screens.CustomerSupport.route)
-                        },
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.Menu,
-                                contentDescription = "Menu icon",
-                                tint = MaterialTheme.colorScheme.onSurface
-                            )
-                        }
+            },
+            bottomBar = {
+                NavigationBar {
+                    items.forEachIndexed { index, item ->
+                        NavigationBarItem(
+                            modifier = Modifier
+//                            .height(20.dp)
+                                .padding(3.dp),
+                            selected = selectedItemIndex == index,
+                            onClick = {
+                                selectedItemIndex = index
+                                navController.navigate(item.route)
+                            },
+                            label = {
+                                Text(text = item.title)
+                            },
+                            alwaysShowLabel = false,
+                            icon = {
+                                BadgedBox(
+                                    badge = {
+                                        if (item.badgeCount != null) {
+                                            Badge {
+                                                Text(text = item.badgeCount.toString())
+                                            }
+                                        } else if (item.hasNews) {
+                                            Badge()
+                                        }
+                                    }
+                                ) {
+                                    Icon(
+                                        modifier = Modifier
+                                            .size(30.dp),
+                                        imageVector = item.selectedIcon,
+                                        contentDescription = item.title
+                                    )
+                                }
+                            }
+                        )
                     }
-                )
+                }
             }
         ) {
             Column(
