@@ -6,10 +6,11 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONObject
 
 data class User(
-    val name: String,
-    val email: String,
+    val id: String,
+    var name: String,
+    var email: String,
     val password : String,
-    val contact : String,
+    var contact : String,
     val role: String,
     val image: String
 ){

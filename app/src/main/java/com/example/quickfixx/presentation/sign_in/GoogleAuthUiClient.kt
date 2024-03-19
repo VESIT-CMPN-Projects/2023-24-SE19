@@ -7,6 +7,7 @@ import com.example.quickfixx.R
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
 import com.google.android.gms.auth.api.identity.BeginSignInRequest.GoogleIdTokenRequestOptions
 import com.google.android.gms.auth.api.identity.SignInClient
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
@@ -18,6 +19,10 @@ class GoogleAuthUiClient(
     private val oneTapClient: SignInClient
 ) {
     private val auth = Firebase.auth
+
+    fun getAut(): FirebaseAuth{
+        return auth
+    }
 
     suspend fun signIn(): IntentSender? {
         val result = try {
@@ -38,24 +43,27 @@ class GoogleAuthUiClient(
                 Log.d("Login", "sucess")
             }else{
                 Log.d("Login", "unsuccessful")
+                task.exception
             }
         }
     }
-    suspend fun signInWithIntent(intent: Intent): SignInResult {
+    suspend fun signInWithIntent(intent: Intent, state: SignInState): SignInResult {
         val credential = oneTapClient.getSignInCredentialFromIntent(intent)
         val googleIdToken = credential.googleIdToken
         val googleCredentials = GoogleAuthProvider.getCredential(googleIdToken, null)
         return try {
             val user = auth.signInWithCredential(googleCredentials).await().user
+            val _userData = user?.run {
+                UserData(
+                    userId = uid,
+                    username = displayName,
+                    profilePictureUrl = photoUrl?.toString(),
+                    email = email.toString()
+                )
+            }
+            state.userData = _userData
             SignInResult(
-                data = user?.run {
-                    UserData(
-                        userId = uid,
-                        username = displayName,
-                        profilePictureUrl = photoUrl?.toString(),
-                        email = email.toString()
-                    )
-                },
+                data = _userData,
                 errorMessage = null
             )
         } catch(e: Exception) {

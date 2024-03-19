@@ -16,4 +16,9 @@ class UserRepositoryImpl @Inject constructor(
         api.saveUser(userBody)
     }
 
+    override suspend fun updateUser(userId: String, userBody: RequestBody) {
+        api.updateUser(userId, userBody)
+    }
+
+
 }
