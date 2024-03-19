@@ -1,9 +1,10 @@
 package com.example.quickfixx.presentation.UserScreen
 
+import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -17,6 +18,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.filled.Home
@@ -24,7 +26,6 @@ import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.outlined.Favorite
 import androidx.compose.material.icons.outlined.Info
-import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.PersonPin
 import androidx.compose.material.icons.rounded.ArrowForwardIos
 import androidx.compose.material.icons.rounded.Edit
@@ -34,29 +35,33 @@ import androidx.compose.material.icons.rounded.Person4
 import androidx.compose.material.icons.rounded.PersonPin
 import androidx.compose.material.icons.rounded.Reviews
 import androidx.compose.material3.BadgedBox
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -64,20 +69,36 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
-import com.example.quickfixx.R
+import com.example.quickfixx.domain.model.User
 import com.example.quickfixx.presentation.HomePage.BottomNavigationItem
+import com.example.quickfixx.presentation.sign_in.SignInViewModel
 import com.example.quickfixx.presentation.sign_in.UserData
 import com.example.quickfixx.ui.theme.DeepBlue
 import com.example.quickfixx.ui.theme.Silver
 
+@SuppressLint("StateFlowValueCalledInComposition")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun UserCard(
     navController: NavController,
     userData : UserData?,
-    onSignOut: () -> Unit
+    onSignOut: () -> Unit,
+    user : User?,
+    userViewModel: UserViewModel,
+    viewModel: SignInViewModel
 ){
-
+//    val userState by viewModel.state.collectAsState()
+    val user = viewModel.state.value.user
+    val username = remember {
+        mutableStateOf(user?.name)
+    }
+    val userEmail = remember {
+        mutableStateOf(user?.email)
+    }
+    val userContact = remember{
+        mutableStateOf(user?.contact)
+    }
+    var editProfileScreen by remember { mutableStateOf(false) }
     val items = listOf(
         BottomNavigationItem(
             title = "Home",
@@ -178,6 +199,7 @@ fun UserCard(
                 .background(Silver)
                 .fillMaxSize()
                 .padding(horizontal = 15.dp)
+                .verticalScroll(rememberScrollState())
         ) {
             Box(
                 modifier = Modifier
@@ -210,8 +232,8 @@ fun UserCard(
                             .padding(horizontal = 8.dp)
                             .weight(1f)
                     ) {
-                        if (userData != null) {
-                            userData.username?.let {
+                        if (user != null) {
+                            user.name?.let {
                                 Text(
                                     text = it,
                                     style = MaterialTheme.typography.titleLarge
@@ -219,9 +241,9 @@ fun UserCard(
                             }
                         }
 
-                        if (userData != null) {
+                        if (user != null) {
                             Text(
-                                text = userData.email,
+                                text = user.email,
                                 style = MaterialTheme.typography.labelMedium,
                                 overflow = TextOverflow.Ellipsis,
                             )
@@ -244,6 +266,9 @@ fun UserCard(
                         modifier = Modifier
                             .size(25.dp)
                             .padding(top = 5.dp)
+                            .clickable {
+                                editProfileScreen = !editProfileScreen
+                            }
                     )
                     Spacer(
                         modifier = Modifier
@@ -252,9 +277,111 @@ fun UserCard(
                     Icon(
                         imageVector = Icons.Rounded.ArrowForwardIos,
                         contentDescription = "Goto Edit Profile",
+                        modifier = Modifier
+                            .size(22.dp)
+                            .padding(top = 5.dp)
                     )
                 }
             }
+            }
+            if(editProfileScreen){
+                ModalBottomSheet(
+                    content = {
+                        Surface(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .height(300.dp) // Adjust height as needed
+                                .padding(16.dp)
+                        ) {
+                            // Your input form UI here
+                            Column {
+                                Text(
+                                    text = "Edit Profile",
+                                    modifier = Modifier
+                                        .align(Alignment.CenterHorizontally)
+                                        .padding(bottom = 10.dp),
+                                    style = MaterialTheme.typography.headlineLarge
+                                )
+                                Box(
+                                    modifier = Modifier
+                                        .background(Silver)
+                                ) {
+                                    Column (
+                                        modifier = Modifier
+                                            .background(Silver)
+                                    ){
+                                    username.value?.let {
+                                        TextField(
+                                            value = it, // Replace with your state variable
+                                            onValueChange = { newValue ->
+                                                username.value = newValue
+                                            }, // Update your state on change
+                                            label = { Text("Name") }
+                                        )
+                                    }
+                                    Spacer(
+                                        modifier = Modifier
+                                            .height(17.dp)
+                                    )
+                                    userEmail.value?.let {
+                                        TextField(
+                                            value = it, // Replace with your state variable
+                                            onValueChange = { newValue ->
+                                                userEmail.value = newValue
+                                            }, // Update your state on change
+                                            label = { Text("Email") }
+                                        )
+                                    }
+                                    Spacer(
+                                        modifier = Modifier
+                                            .height(17.dp)
+                                    )
+                                    userContact.value?.let {
+                                        TextField(
+                                            value = it, // Replace with your state variable
+                                            onValueChange = { newValue ->
+                                                userContact.value = newValue
+                                            }, // Update your state on change
+                                            label = { Text("Contact") }
+                                        )
+                                    }
+                                }
+                            }
+                                Spacer(
+                                    modifier =Modifier
+                                        .height(17.dp)
+                                )
+                                Button(
+                                    onClick = {
+                                        if (user != null) {
+                                            user.name = username.value.toString()
+                                            user.email = userEmail.value.toString()
+                                            user.contact = userContact.value.toString()
+                                        }
+                                        Log.d("User-Updated", user.toString())
+                                        if (user != null) {
+                                            userViewModel.updateUser(user.id,user)
+                                        }
+                                        editProfileScreen=!editProfileScreen
+
+                                    },
+                                    modifier = Modifier
+                                        .align(Alignment.CenterHorizontally),
+//                                    colors = ButtonDefaults.buttonColors(backgroundColor = Color.Black)
+                                    colors = ButtonDefaults.buttonColors(Color.Black)
+                                ) {
+                                    Text(
+                                        text = "Save",
+                                        color = Color.White
+                                        )
+                                }
+                            }
+                        }
+                    },
+                    onDismissRequest = {
+                        editProfileScreen = !editProfileScreen
+                    }
+                )
             }
             TwoCardsBelowUserCard()
             Column(

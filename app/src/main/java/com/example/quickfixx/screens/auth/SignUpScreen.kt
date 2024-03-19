@@ -1,7 +1,5 @@
 package com.example.quickfixx.screens.auth
 
-import android.content.ContentValues.TAG
-import android.content.pm.PackageManager.ComponentEnabledSetting
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.layout.Column
@@ -11,15 +9,15 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowBackIos
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.material.icons.rounded.MailOutline
-import androidx.compose.material.icons.rounded.Phone
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -43,20 +41,27 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.os.bundleOf
 import androidx.navigation.NavController
-import com.example.quickfixx.navigation.Screens
+import com.example.quickfixx.domain.model.User
+import com.example.quickfixx.presentation.sign_in.GoogleAuthUiClient
 import com.example.quickfixx.presentation.sign_in.SignInState
 import com.example.quickfixx.presentation.sign_in.SignInViewModel
-import com.google.firebase.auth.FirebaseAuth
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 //private lateinit var binding:ActivitySignUpBinding
-fun SignUpScreen(state: SignInState, navController: NavController, viewModel: SignInViewModel, onSignInClick: ()->Unit) {
+fun SignUpScreen(
+    state: SignInState,
+    navController: NavController,
+    viewModel: SignInViewModel,
+    onSignInClick: ()->Unit,
+    googleAuthClient: GoogleAuthUiClient,
+) {
+    val auth = googleAuthClient.getAut()
     val context = LocalContext.current
     LaunchedEffect(key1 = state.signInError) {
         state.signInError?.let { error ->
@@ -67,6 +72,7 @@ fun SignUpScreen(state: SignInState, navController: NavController, viewModel: Si
             ).show()
         }
     }
+    val newUser: User
     var Name = remember {
         mutableStateOf("")
     }
@@ -88,6 +94,67 @@ fun SignUpScreen(state: SignInState, navController: NavController, viewModel: Si
     var gmailError by remember { mutableStateOf("") }
     var passwordError by remember { mutableStateOf("") }
 
+    fun signUpAndSignIn(email: String, password: String, user: User){
+        state.user=user
+        Log.d("STATE USER", user.name)
+        Log.d("USER START 0","---------------------------")
+        viewModel.getUser(email)
+        auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                // Account created successfully, now sign in
+                Log.d("USER START 1","---------------------------")
+                auth.signInWithEmailAndPassword(email, password).addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        Log.d("USER START 2","---------------------------")
+                        // Sign-in success, navigate to home screen
+                        googleAuthClient.getSignedInUser()?.username?.let {
+                            Log.d("SIGNED UP USER",
+                                it
+                            )
+                        }
+                        navController.navigate("home") {
+                            popUpTo(0)
+                        }
+                    } else {
+                        // Handle sign-in failure
+                        Log.d("SIGN IN TASK", task.exception.toString())
+                        Toast.makeText(
+                            context,
+                            "Sign-in failed: ${task.exception?.message}",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+                }
+            } else {
+                // Handle account creation failure
+                Log.d("SIGN UP TASK", task.exception.toString())
+                Toast.makeText(
+                    context,
+                    "Sign-up failed: ${task.exception?.message}",
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+        }
+    }
+
+    fun signInWithSameCredentials(email: String, password: String) {
+        auth.signInWithEmailAndPassword(email, password).addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                // Sign-in success, navigate to home screen
+                navController.navigate("home") {
+                    popUpTo(0)
+                }
+            } else {
+                // Handle sign-in failure
+                Log.d("SIGN IN TASK", task.exception.toString())
+                Toast.makeText(
+                    context,
+                    "Sign-in failed: ${task.exception?.message}",
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+        }
+    }
 
     fun validateFields():Boolean{
         val isValid = false
@@ -139,7 +206,9 @@ fun SignUpScreen(state: SignInState, navController: NavController, viewModel: Si
             }
         ) {
             Surface(
-                modifier = Modifier.padding(it.calculateTopPadding())
+                modifier = Modifier
+                    .padding(it.calculateTopPadding())
+                    .verticalScroll(rememberScrollState())
             ) {
 
 
@@ -250,7 +319,15 @@ fun SignUpScreen(state: SignInState, navController: NavController, viewModel: Si
                     Spacer(modifier = Modifier.height(12.dp))
                     Button(
                         onClick = {
-                            if(validateFields()){
+                                val user: User= User(
+                                    name = Name.value,
+                                    email = gmail.value,
+                                    password = password.value,
+                                    contact = Contact.value,
+                                    role = "user",
+                                    image = "",
+                                    id = ""
+                                )
                                 viewModel.saveUser(
                                     Name.value,
                                     gmail.value,
@@ -260,8 +337,9 @@ fun SignUpScreen(state: SignInState, navController: NavController, viewModel: Si
                                     ""
                                 )
                                 Log.d("SAVE USER", Name.value)
-                                navController.navigate("home")
-                            }
+                               signUpAndSignIn(gmail.value, password.value, user)
+//                                navController.navigate("home")
+
                         },
                         enabled = validateFields(),
                         shape = RoundedCornerShape(10.dp),

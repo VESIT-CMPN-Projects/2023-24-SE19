@@ -1,13 +1,13 @@
 package com.example.quickfixx.presentation.HomePage
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -28,7 +28,6 @@ import androidx.compose.material.icons.rounded.Carpenter
 import androidx.compose.material.icons.rounded.ElectricalServices
 import androidx.compose.material.icons.rounded.House
 import androidx.compose.material.icons.rounded.Plumbing
-import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -47,31 +46,22 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.quickfixx.R
-import com.example.quickfixx.navigation.Screens
-import com.example.quickfixx.navigation.Screens.CustomerSupport.route
-import com.example.quickfixx.navigation.Screens.ElectricianData.route
-import com.example.quickfixx.navigation.Screens.WelcomePageScreen.route
-import com.example.quickfixx.presentation.sign_in.UserData
 import com.example.quickfixx.ui.theme.AquaBlue
 import com.example.quickfixx.ui.theme.DeepBlue
 import com.example.quickfixx.ui.theme.Silver
 import androidx.compose.runtime.*
-import androidx.navigation.compose.*
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.*
 import androidx.compose.material.icons.filled.*
-import androidx.compose.material.icons.outlined.Notifications
-import androidx.compose.material.icons.outlined.Person
-import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.graphics.vector.ImageVector
+import com.example.quickfixx.domain.model.User
+import com.example.quickfixx.presentation.sign_in.SignInState
+import com.example.quickfixx.presentation.sign_in.SignInViewModel
+import com.example.quickfixx.presentation.sign_in.UserData
+
 data class BottomNavigationItem(
     val title: String,
     val selectedIcon: ImageVector,
@@ -86,9 +76,23 @@ data class BottomNavigationItem(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 //private lateinit var binding:ActivitySignUpBinding
-fun HomePage(navController: NavController,
-             userData: UserData?,
-             onSignOut: () -> Unit) {
+fun HomePage(
+    navController: NavController,
+    userData: UserData?,
+    HViewModel: SignInViewModel,
+    state: SignInState,
+//    user : User?,
+    onSignOut: () -> Unit) {
+
+
+    val user = state.user
+//    val userData = state.userData
+
+    user?.let { Log.d("HOME PAGE USER", it.name) }
+
+    if(userData!=null){
+        userData.username?.let { Log.d("HOME PAGE USERDATA", it) }
+    }
     val items = listOf(
         BottomNavigationItem(
             title = "Home",
@@ -134,7 +138,7 @@ fun HomePage(navController: NavController,
                 colors = TopAppBarDefaults.topAppBarColors(),
                 actions = {
                     // Show sign-out button only if user is logged in
-                    if (userData != null) {
+                    if (user != null || userData != null) {
                         IconButton(
                             onClick = { onSignOut() },
                         ) {
@@ -208,11 +212,16 @@ fun HomePage(navController: NavController,
                         .padding(top = 29.dp)
                         .align(Alignment.CenterStart)
                 ) {
-                    Text(
-                        text = "Hello " + userData?.username,
-                        color = Color.White,
-                        style = MaterialTheme.typography.headlineMedium
-                    )
+
+                    if (user != null) {
+                        Text(
+                //                        text = "Hello " + if(user!=null) user.name else userData?.username,
+                            text = "Hello " +user.name ,
+                            color = Color.White,
+                            style = MaterialTheme.typography.headlineMedium
+                        )
+                    }
+
                     Text(
                         text = "Welcome to Quickfixx",
                         modifier = Modifier

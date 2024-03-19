@@ -4,6 +4,7 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.Manifest
+import android.annotation.SuppressLint
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
@@ -13,7 +14,6 @@ import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -22,23 +22,20 @@ import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.quickfixx.ViewModels.ElectricianViewModel
 import com.example.quickfixx.domain.model.User
 import com.example.quickfixx.presentation.Messages
-import com.example.quickfixx.presentation.UserScreen.ProfileScreen
 import com.example.quickfixx.presentation.UserScreen.UserCard
+import com.example.quickfixx.presentation.UserScreen.UserViewModel
 import com.example.quickfixx.presentation.sign_in.GoogleAuthUiClient
-import com.example.quickfixx.presentation.sign_in.LoginInScreen
 import com.example.quickfixx.presentation.sign_in.SignInViewModel
 import com.example.quickfixx.screens.auth.Electrician.ElectricianData
 import com.example.quickfixx.screens.auth.ProviderDetails
 import com.example.quickfixx.screens.auth.SignUpScreen
 import com.example.quickfixx.screens.auth.WelcomePageScreen
-import com.example.quickfixx.screens.auth.service_provider.UserDetails
 import com.example.quickfixx.ui.theme.QuickFixxTheme
 import com.google.ai.client.generativeai.GenerativeModel
 import com.google.android.gms.auth.api.identity.Identity
@@ -58,6 +55,7 @@ class MainActivity : ComponentActivity() {
         )
     }
 
+    @SuppressLint("CoroutineCreationDuringComposition")
     override fun onCreate(savedInstanceState: Bundle?) {
             super.onCreate(savedInstanceState)
             val generativeModel = GenerativeModel(
@@ -85,7 +83,7 @@ class MainActivity : ComponentActivity() {
             QuickFixxTheme {
 
                 val viewModel = hiltViewModel<SignInViewModel>()
-                var user: User?
+                var user: User? = null
 
                 // A surface container using the 'background' color from the theme
                 Surface(
@@ -135,6 +133,7 @@ class MainActivity : ComponentActivity() {
                         }
                         composable("user_profile"){
 //                            ProfileScreen(onGoBack = { })
+                            val userViewModel: UserViewModel = hiltViewModel()
                             UserCard(navController = navController,
                                 userData = googleAuthUiClient.getSignedInUser(),
                                 onSignOut = {
@@ -151,7 +150,11 @@ class MainActivity : ComponentActivity() {
                                         }
 
                                     }
-                                })
+                                },
+                                user,
+                                userViewModel,
+                                viewModel
+                                )
 //                            UserDetails(navController = navController)
                         }
 
@@ -177,7 +180,8 @@ class MainActivity : ComponentActivity() {
                                     if(result.resultCode == RESULT_OK) {
                                         lifecycleScope.launch {
                                             val signInResult = googleAuthUiClient.signInWithIntent(
-                                                intent = result.data ?: return@launch
+                                                intent = result.data ?: return@launch,
+                                                state
                                             )
                                             viewModel.onSignInResult(signInResult)
                                         }
@@ -187,19 +191,37 @@ class MainActivity : ComponentActivity() {
 
                             LaunchedEffect(key1 = state.isSignInSuccessful) {
                                 if(state.isSignInSuccessful) {
-                                    Toast.makeText(
-                                        applicationContext,
-                                        "Sign in successful",
-                                        Toast.LENGTH_LONG
-                                    ).show()
-
-                                    navController.navigate("home"){
-                                        popUpTo(0)
+                                    state.userData?.username?.let { it1 ->
+                                        Log.d("SINGIN SUCC",
+                                            it1
+                                        )
                                     }
-                                    viewModel.resetState()
+                                    val signedInUser = googleAuthUiClient.getSignedInUser()
+//                                    Log.d("SIGNED IN USER", signedInUser.username)
+                                    if (signedInUser != null) {
+                                         user = viewModel.repo.getByEmail(signedInUser.email)
+                                        viewModel.getUser(signedInUser.email)
+                                        if (user != null) {
+                                            Log.d("AFTER SIGNED IN USER", user!!.name)
+                                            state.user = user // Update the user in the state
+                                            Toast.makeText(
+                                                applicationContext,
+                                                "Sign in successful",
+                                                Toast.LENGTH_LONG
+                                            ).show()
+                                            navController.navigate("home") {
+                                                popUpTo(0)
+                                            }
+                                            viewModel.resetState()
+                                        }
+                                    }
                                 }
                             }
-                            SignUpScreen(state,navController = navController, viewModel, onSignInClick = {
+                            SignUpScreen(
+                                state,
+                                navController = navController,
+                                viewModel,
+                                onSignInClick = {
                                     lifecycleScope.launch {
                                         val signInIntentSender = googleAuthUiClient.signIn()
                                         launcher.launch(
@@ -207,28 +229,38 @@ class MainActivity : ComponentActivity() {
                                                 signInIntentSender ?: return@launch
                                             ).build()
                                         )
+//                                        googleAuthUiClient.getSignedInUser()
+//                                            ?.let { it1 -> viewModel.getUser(it1.email) }
                                     }
-                                })
+
+                                },
+                                googleAuthClient = googleAuthUiClient
+                            )
                         }
 
                         composable("home"){
-                            com.example.quickfixx.presentation.HomePage.HomePage(navController = navController,
+
+                            val state by viewModel.state.collectAsStateWithLifecycle()
+                            com.example.quickfixx.presentation.HomePage.HomePage(
+                                navController = navController,
+                                state = state,
                                 userData = googleAuthUiClient.getSignedInUser(),
-                                onSignOut = {
-                                    lifecycleScope.launch {
-                                        googleAuthUiClient.signOut()
-                                        Toast.makeText(
-                                            applicationContext,
-                                            "Signed out",
-                                            Toast.LENGTH_LONG
-                                        ).show()
+                                HViewModel = viewModel
+                            ) {
+                                lifecycleScope.launch {
+                                    googleAuthUiClient.signOut()
+                                    Toast.makeText(
+                                        applicationContext,
+                                        "Signed out",
+                                        Toast.LENGTH_LONG
+                                    ).show()
 
-                                        navController.navigate("sign_up"){
-                                            popUpTo(0)
-                                        }
-
+                                    navController.navigate("sign_up") {
+                                        popUpTo(0)
                                     }
-                                })
+
+                                }
+                            }
                         }
 
                     }
