@@ -30,6 +30,8 @@ import com.example.quickfixx.domain.model.User
 import com.example.quickfixx.presentation.Messages
 import com.example.quickfixx.presentation.UserScreen.UserCard
 import com.example.quickfixx.presentation.UserScreen.UserViewModel
+import com.example.quickfixx.presentation.service_provider.SPSignUp
+import com.example.quickfixx.presentation.service_provider.SpViewModel
 import com.example.quickfixx.presentation.sign_in.GoogleAuthUiClient
 import com.example.quickfixx.presentation.sign_in.SignInViewModel
 import com.example.quickfixx.screens.auth.Electrician.ElectricianData
@@ -151,7 +153,6 @@ class MainActivity : ComponentActivity() {
 
                                     }
                                 },
-                                user,
                                 userViewModel,
                                 viewModel
                                 )
@@ -235,6 +236,30 @@ class MainActivity : ComponentActivity() {
 
                                 },
                                 googleAuthClient = googleAuthUiClient
+                            )
+                        }
+
+                        composable("spSignup"){
+                            val spViewModel:SpViewModel = hiltViewModel()
+                            SPSignUp(
+                                viewModel,
+                                navController,
+                                onSignOut = {
+                                    lifecycleScope.launch {
+                                        googleAuthUiClient.signOut()
+                                        Toast.makeText(
+                                            applicationContext,
+                                            "Signed out",
+                                            Toast.LENGTH_LONG
+                                        ).show()
+
+                                        navController.navigate("sign_up"){
+                                            popUpTo(0)
+                                        }
+
+                                    }
+                                },
+                                spViewModel
                             )
                         }
 

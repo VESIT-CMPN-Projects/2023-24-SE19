@@ -95,10 +95,9 @@ fun SignUpScreen(
     var passwordError by remember { mutableStateOf("") }
 
     fun signUpAndSignIn(email: String, password: String, user: User){
-        state.user=user
+//        state.user=user
         Log.d("STATE USER", user.name)
         Log.d("USER START 0","---------------------------")
-        viewModel.getUser(email)
         auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener { task ->
             if (task.isSuccessful) {
                 // Account created successfully, now sign in
@@ -107,6 +106,7 @@ fun SignUpScreen(
                     if (task.isSuccessful) {
                         Log.d("USER START 2","---------------------------")
                         // Sign-in success, navigate to home screen
+                        viewModel.getUser(email)
                         googleAuthClient.getSignedInUser()?.username?.let {
                             Log.d("SIGNED UP USER",
                                 it

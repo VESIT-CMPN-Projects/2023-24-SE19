@@ -1,5 +1,7 @@
 package com.example.quickfixx.repository
 
+import com.example.quickfixx.repository.CarpenterRepo.CarpeRepo
+import com.example.quickfixx.repository.CarpenterRepo.CarpeRepoImpl
 import com.example.quickfixx.repository.UserRepository.UserRepository
 import com.example.quickfixx.repository.UserRepository.UserRepositoryImpl
 import dagger.Binds
@@ -23,4 +25,10 @@ abstract class RepositoryModule {
     abstract fun bindUserApiRepo(
         userApiRepo: UserRepositoryImpl
     ): UserRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindCarpenterApiRepo(
+        carpenterApiRepo: CarpeRepoImpl
+    ): CarpeRepo
 }
