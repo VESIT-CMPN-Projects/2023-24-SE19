@@ -30,11 +30,14 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.AssistChipDefaults
+import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Divider
@@ -42,6 +45,8 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -57,6 +62,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -77,6 +83,7 @@ import com.example.quickfixx.R
 import com.example.quickfixx.R.drawable.baseline_star_outline_24
 import com.example.quickfixx.ViewModels.ElectricianViewModel
 import com.example.quickfixx.navigation.Screens
+import com.example.quickfixx.presentation.HomePage.BottomNavigationItem
 import kotlinx.coroutines.launch
 
 
@@ -96,6 +103,32 @@ fun ElectricianData(
     val pagerState = rememberPagerState(pageCount = { ScreenTabs.entries.size }, initialPage = tabIndex)
     val selectedTabIndex = remember { derivedStateOf { pagerState.currentPage } }
 
+    val items = listOf(
+        BottomNavigationItem(
+            title = "Home",
+            selectedIcon = Icons.Filled.Home,
+//            unselectedIcon = Icons.Outlined.Home,
+            hasNews = false,
+            route = "home"
+        ),
+        BottomNavigationItem(
+            title = "Messages",
+            selectedIcon = Icons.Filled.Notifications,
+//            unselectedIcon = Icons.Outlined.Notifications,
+            hasNews = false,
+            route = "messages"
+        ),
+        BottomNavigationItem(
+            title = "Profile",
+            selectedIcon = Icons.Filled.Person,
+//            unselectedIcon = Icons.Outlined.Person,
+            hasNews = true,
+            route = "user_profile"
+        ),
+    )
+    var selectedItemIndex by rememberSaveable {
+        mutableStateOf(2)
+    }
     Surface(
         modifier = Modifier.fillMaxWidth(),
         color = MaterialTheme.colorScheme.background
@@ -122,6 +155,37 @@ fun ElectricianData(
                     }
                     )
             },
+            bottomBar = {
+                NavigationBar {
+                    items.forEachIndexed { index, item ->
+                        NavigationBarItem(
+                            selected = selectedItemIndex == index,
+                            onClick = {
+                                selectedItemIndex = index
+                                navController.navigate(item.route)
+                            },
+                            label = {
+                                Text(text = item.title)
+                            },
+
+                            icon = {
+                                BadgedBox(
+                                    badge = {
+
+                                    }
+                                ) {
+                                    Icon(
+                                        modifier = Modifier
+                                            .size(30.dp),
+                                        imageVector = item.selectedIcon,
+                                        contentDescription = item.title
+                                    )
+                                }
+                            }
+                        )
+                    }
+                }
+            }
 
         ) {
             Column (
@@ -171,7 +235,7 @@ fun ElectricianData(
                                         items(items = electricians) {
                                             Log.d("Electrician-name", it.name)
                                             Log.d("Electrician-rating", it.rating.toString())
-                                            ElecCard(name = it.name, rating = it.rating, navController = navController)
+                                            ElecCard(name = it.name, rating = it.rating, image = it.image,navController = navController)
                                         }
                                     }
                                 }
@@ -186,7 +250,7 @@ fun ElectricianData(
                                         items(items = acService) {
                                             Log.d("Electrician-name", it.name)
                                             Log.d("Electrician-rating", it.rating.toString())
-                                            ElecCard(name = it.name, rating = it.rating, navController = navController)
+                                            ElecCard(name = it.name, rating = it.rating, image= it.image,navController = navController)
                                         }
                                     }
                                 }
@@ -201,7 +265,7 @@ fun ElectricianData(
                                         items(items = tvService) {
                                             Log.d("Electrician-name", it.name)
                                             Log.d("Electrician-rating", it.rating.toString())
-                                            ElecCard(name = it.name, rating = it.rating, navController = navController)
+                                            ElecCard(name = it.name, rating = it.rating, image = it.image,navController = navController)
                                         }
                                     }
                                 }
@@ -216,7 +280,7 @@ fun ElectricianData(
                                         items(items = cirkit) {
                                             Log.d("Electrician-name", it.name)
                                             Log.d("Electrician-rating", it.rating.toString())
-                                            ElecCard(name = it.name, rating = it.rating, navController = navController)
+                                            ElecCard(name = it.name, rating = it.rating, image = it.image,navController = navController)
                                         }
                                     }
                                 }
@@ -246,7 +310,7 @@ enum class ScreenTabs(
     )
 }
 @Composable
-fun ElecCard(name: String, rating: Float, navController: NavController) {
+fun ElecCard(name: String, rating: Float, image: String, navController: NavController) {
     Surface(
         shape = RoundedCornerShape(16.dp),
         color = Color(0xFFDAE1E7),
@@ -273,7 +337,7 @@ fun ElecCard(name: String, rating: Float, navController: NavController) {
 
                 ) {
                     Image(
-                        painter = rememberAsyncImagePainter("https://images.unsplash.com/photo-1503023345310-bd7c1de61c7d?q=80&w=1965&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"),
+                        painter = rememberAsyncImagePainter(image),
                         contentDescription = null,
                         modifier = Modifier.size(128.dp)
                     )

@@ -291,57 +291,57 @@ fun ServicesSection(services: List<Services>, navController: NavController) {
                 modifier = Modifier.padding(15.dp),
                 fontWeight = FontWeight.Bold
             )
-            RenderIcons(
-                list = listOf(
-                    ServiceIcon(
-                        icon = Icons.Rounded.AcUnit,
-                        route = "electricians",
-                        tabIndex = 0
-                    ),
-                    ServiceIcon(
-                        icon = Icons.Outlined.Bathroom,
-                        route = "electricians",
-                        tabIndex = 1
-                    ),
-                    ServiceIcon(
-                        icon = Icons.Outlined.ElectricalServices,
-                        route = "electricians",
-                        tabIndex = 2
-                    ),
-                    ServiceIcon(
-                        icon = Icons.Outlined.Home,
-                        route = "electricians",
-                        tabIndex = 3
-                    )
-                ),
-                navController
-            )
-
-            RenderIcons(
-                list = listOf(
-                    ServiceIcon(
-                        icon = Icons.Rounded.AcUnit,
-                        route = "electricians",
-                        tabIndex = 0
-                    ),
-                    ServiceIcon(
-                        icon = Icons.Outlined.Bathroom,
-                        route = "electricians",
-                        tabIndex = 1
-                    ),
-                    ServiceIcon(
-                        icon = Icons.Outlined.ElectricalServices,
-                        route = "electricians",
-                        tabIndex = 2
-                    ),
-                    ServiceIcon(
-                        icon = Icons.Outlined.Home,
-                        route = "electricians",
-                        tabIndex = 3
-                    )
-                ),
-                navController
-            )
+//            RenderIcons(
+//                list = listOf(
+//                    ServiceIcon(
+//                        icon = Icons.Rounded.AcUnit,
+//                        route = "electricians",
+//                        tabIndex = 0
+//                    ),
+//                    ServiceIcon(
+//                        icon = Icons.Outlined.Bathroom,
+//                        route = "electricians",
+//                        tabIndex = 1
+//                    ),
+//                    ServiceIcon(
+//                        icon = Icons.Outlined.ElectricalServices,
+//                        route = "electricians",
+//                        tabIndex = 2
+//                    ),
+//                    ServiceIcon(
+//                        icon = Icons.Outlined.Home,
+//                        route = "electricians",
+//                        tabIndex = 3
+//                    )
+//                ),
+//                navController
+//            )
+//
+//            RenderIcons(
+//                list = listOf(
+//                    ServiceIcon(
+//                        icon = Icons.Rounded.AcUnit,
+//                        route = "electricians",
+//                        tabIndex = 0
+//                    ),
+//                    ServiceIcon(
+//                        icon = Icons.Outlined.Bathroom,
+//                        route = "electricians",
+//                        tabIndex = 1
+//                    ),
+//                    ServiceIcon(
+//                        icon = Icons.Outlined.ElectricalServices,
+//                        route = "electricians",
+//                        tabIndex = 2
+//                    ),
+//                    ServiceIcon(
+//                        icon = Icons.Outlined.Home,
+//                        route = "electricians",
+//                        tabIndex = 3
+//                    )
+//                ),
+//                navController
+//            )
 //            }
 
             LazyVerticalGrid(
@@ -432,16 +432,6 @@ fun ServiceItem(
 //                .background(Color.Blue)
                 .background(Color.White)
         ){
-
-//            Icon(
-//                imageVector = service.icon,
-//                contentDescription = service.description,
-//                tint = Color.Black,
-//                modifier = Modifier
-//                    .align(Alignment.BottomStart)
-//                    .size(50.dp)
-//
-//            )
             Image(
                 painter = painterResource(id = service.image),
                 contentDescription = service.description,

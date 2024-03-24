@@ -36,5 +36,17 @@ object RetrofitInstance {
 
     }
 
+    @Provides
+    @Singleton
+    fun carpenterAPI(): CarpenterAPI{
+        val retrofitBuilder = Retrofit.Builder()
+            .baseUrl(Constants.CARPENTER_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(CarpenterAPI::class.java)
+        return retrofitBuilder
+
+    }
+
 
 }

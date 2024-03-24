@@ -2,6 +2,7 @@ package com.example.quickfixx.repository
 
 import com.example.quickfixx.api.ElectricianApi
 import com.example.quickfixx.domain.model.Electrician
+import okhttp3.RequestBody
 import javax.inject.Inject
 
 class RepositoryImpl @Inject constructor(
@@ -22,6 +23,10 @@ class RepositoryImpl @Inject constructor(
 
     override suspend fun getElectricianByCircuit(): List<Electrician>? {
         return api.getElectricianByCircuit().body()
+    }
+
+    override suspend fun saveElectrician(elecBody: RequestBody) {
+        api.saveElectrician(elecBody)
     }
 
 }

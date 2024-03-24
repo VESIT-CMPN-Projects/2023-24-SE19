@@ -12,7 +12,9 @@ data class Electrician(
     val location: String,
     val experience: String,
     val qualitfication: Array<String>,
-    val rating: Float
+    val rating: Float,
+    val shopname: String,
+    val image: String
 ){
     fun convertToJson(): RequestBody? {
 //        val jsonObj = JSONObject()
